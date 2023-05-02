@@ -13,6 +13,9 @@ import us.jameschan.supervisor.advice.SupervisorInterceptor;
 
 import javax.sql.DataSource;
 
+/**
+ * Supervisor core configuration.
+ */
 @NonNullApi
 @Configuration
 @EnableWebMvc
@@ -30,6 +33,9 @@ public class SupervisorConfiguration implements WebMvcConfigurer {
     @Value("${database.password}")
     private String databasePassword;
 
+    /**
+     * JPA data source configuration.
+     */
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -42,6 +48,9 @@ public class SupervisorConfiguration implements WebMvcConfigurer {
         return dataSource;
     }
 
+    /**
+     * Interceptors registration.
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SupervisorInterceptor());

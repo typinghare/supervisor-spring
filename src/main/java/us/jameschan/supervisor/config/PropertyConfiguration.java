@@ -5,14 +5,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * This configuration file enables developers to define properties and register them with Spring beans.
+ * @author James Chan.
+ */
 @Configuration
 @PropertySource({
     "classpath:database.properties",
     "classpath:.env.properties"
 })
 public class PropertyConfiguration {
-
-
     @Value("${encoder.saltLength}")
     private Integer encoderSaltLength;
 

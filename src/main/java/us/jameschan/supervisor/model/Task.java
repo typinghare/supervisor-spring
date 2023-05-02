@@ -35,16 +35,16 @@ public class Task {
     private Timestamp updatedAt;
 
     @UpdateTimestamp
-    @Column(name = "started_at", nullable = false)
+    @Column(name = "started_at")
     private Timestamp startedAt;
 
-    @Column(name = "resumed_at", nullable = false)
+    @Column(name = "resumed_at")
     private Timestamp resumedAt;
 
-    @Column(name = "ended_at", nullable = false)
+    @Column(name = "ended_at")
     private Timestamp endedAt;
 
-    @Column(name = "deleted_at", nullable = false)
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
     public Long getId() {

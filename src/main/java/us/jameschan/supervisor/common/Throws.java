@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.common;
 
 /**
+ * Throws helper functions.
  * @author James Chan.
  */
 public final class Throws {

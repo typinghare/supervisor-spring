@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import us.jameschan.overplay.annotation.Entry;
-import us.jameschan.overplay.annotation.ExceptionConfiguration;
+import us.jameschan.overplay.annotation.OverplayException;
 import us.jameschan.overplay.exception.BaseExceptionNotRegisteredException;
 import us.jameschan.overplay.exception.IncorrectExtensionException;
 import us.jameschan.overplay.stereo.BaseException;
@@ -38,19 +38,19 @@ public class OverplayManager {
     @SuppressWarnings("unchecked")
     public void init() {
         final Map<String, Object> exceptionConfigurationBeanMap
-            = applicationContext.getBeansWithAnnotation(ExceptionConfiguration.class);
+            = applicationContext.getBeansWithAnnotation(OverplayException.class);
 
         for (final Object baseExceptionObject : exceptionConfigurationBeanMap.values()) {
             if (!(baseExceptionObject instanceof BaseException)) {
                 throw new IncorrectExtensionException(baseExceptionObject.getClass());
             }
 
-            final ExceptionConfiguration exceptionConfiguration
-                = baseExceptionObject.getClass().getAnnotation(ExceptionConfiguration.class);
+            final OverplayException overplayException
+                = baseExceptionObject.getClass().getAnnotation(OverplayException.class);
             final Class<? extends BaseException> baseExceptionClass
                 = (Class<? extends BaseException>) baseExceptionObject.getClass();
             final BaseExceptionInfo baseExceptionInfo
-                = new BaseExceptionInfo(exceptionConfiguration.exceptionCode());
+                = new BaseExceptionInfo(overplayException.typeCode());
             baseExceptionClassMap.put(baseExceptionClass, baseExceptionInfo);
 
             // Utilizing Java reflection to read fields.

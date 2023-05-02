@@ -3,13 +3,13 @@ package us.jameschan.supervisor.exception;
 import org.springframework.http.HttpStatus;
 import us.jameschan.overplay.OverplayManager;
 import us.jameschan.overplay.annotation.Entry;
-import us.jameschan.overplay.annotation.ExceptionConfiguration;
+import us.jameschan.overplay.annotation.OverplayException;
 import us.jameschan.overplay.stereo.BaseException;
 
 /**
  * User exception.
  */
-@ExceptionConfiguration(exceptionCode = 10)
+@OverplayException(typeCode = 10)
 public class UserException extends BaseException {
     protected UserException(OverplayManager overplayManager) {
         super(overplayManager);

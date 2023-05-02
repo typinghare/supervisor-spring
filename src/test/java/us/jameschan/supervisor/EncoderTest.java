@@ -3,7 +3,7 @@ package us.jameschan.supervisor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import us.jameschan.supervisor.common.Encoder;
+import us.jameschan.supervisor.util.Encoder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(classes = {
     us.jameschan.supervisor.config.SupervisorConfiguration.class,
     us.jameschan.supervisor.config.PropertyConfiguration.class,
-    us.jameschan.supervisor.common.Encoder.class
+    Encoder.class
 })
 public class EncoderTest {
     @Autowired

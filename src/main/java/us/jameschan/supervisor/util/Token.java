@@ -1,4 +1,4 @@
-package us.jameschan.supervisor.common;
+package us.jameschan.supervisor.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

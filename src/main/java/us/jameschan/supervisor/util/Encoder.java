@@ -1,4 +1,4 @@
-package us.jameschan.supervisor.common;
+package us.jameschan.supervisor.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

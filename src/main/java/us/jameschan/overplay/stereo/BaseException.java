@@ -3,9 +3,9 @@ package us.jameschan.overplay.stereo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import us.jameschan.overplay.OverplayManager;
-import us.jameschan.overplay.annotation.ExceptionConfiguration;
+import us.jameschan.overplay.annotation.OverplayException;
 
-@ExceptionConfiguration(exceptionCode = 0)
+@OverplayException(typeCode = 0)
 public class BaseException extends RuntimeException {
     protected final OverplayManager overplayManager;
 

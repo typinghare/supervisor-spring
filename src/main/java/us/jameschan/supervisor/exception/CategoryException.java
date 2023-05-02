@@ -3,10 +3,10 @@ package us.jameschan.supervisor.exception;
 import org.springframework.http.HttpStatus;
 import us.jameschan.overplay.OverplayManager;
 import us.jameschan.overplay.annotation.Entry;
-import us.jameschan.overplay.annotation.ExceptionConfiguration;
+import us.jameschan.overplay.annotation.OverplayException;
 import us.jameschan.overplay.stereo.BaseException;
 
-@ExceptionConfiguration(exceptionCode = 12)
+@OverplayException(typeCode = 1)
 public class CategoryException extends BaseException {
     public CategoryException(OverplayManager overplayManager) {
         super(overplayManager);

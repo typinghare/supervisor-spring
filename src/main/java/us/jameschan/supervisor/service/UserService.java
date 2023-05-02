@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import us.jameschan.supervisor.common.Encoder;
 import us.jameschan.supervisor.common.Throws;
-import us.jameschan.supervisor.common.Token;
 import us.jameschan.supervisor.dto.UserDto;
 import us.jameschan.supervisor.dto.UserSignInDto;
 import us.jameschan.supervisor.dto.UserSignInResponseDto;
@@ -15,6 +13,8 @@ import us.jameschan.supervisor.dto.UserSignUpDto;
 import us.jameschan.supervisor.exception.UserException;
 import us.jameschan.supervisor.model.User;
 import us.jameschan.supervisor.repository.UserRepository;
+import us.jameschan.supervisor.util.Encoder;
+import us.jameschan.supervisor.util.Token;
 
 import java.util.Objects;
 
@@ -36,15 +36,21 @@ public class UserService {
     }
 
     /**
-     * Returns a user DTO.
+     * Retrieves a user by its id.
      */
-    public UserDto getUserDto(Long userId) {
-        return userRepository.findById(userId)
-            .map(user -> apply(new UserDto(), it -> {
-                it.setId(user.getId());
-                it.setEmail(user.getEmail());
-                it.setUsername(user.getUsername());
-            })).orElseThrow(() -> UserException.USER_NOT_FOUND);
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> UserException.USER_NOT_FOUND);
+    }
+
+    /**
+     * Converts a user to user dto.
+     */
+    public UserDto toUserDto(User user) {
+        return apply(new UserDto(), it -> {
+            it.setId(user.getId());
+            it.setEmail(user.getEmail());
+            it.setUsername(user.getUsername());
+        });
     }
 
     /**

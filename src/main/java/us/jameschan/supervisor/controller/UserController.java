@@ -37,7 +37,7 @@ public class UserController {
     @Message("Successfully get user info.")
     @ResponseBody
     public UserDto getUserInfo(@PathVariable Long userId) {
-        return userService.getUserDto(userId);
+        return userService.toUserDto(userService.getUserById(userId));
     }
 
     @PutMapping("/")
@@ -48,10 +48,10 @@ public class UserController {
     }
 
     @GetMapping("/")
-    @Message("Successfully get user info.")
+    @Message("Successfully get user info of the current user.")
     @ResponseBody
     public UserDto getUserInfo() {
-        return userService.getUserDto(userService.getUserIdByToken());
+        return getUserInfo(userService.getUserIdByToken());
     }
 
     @GetMapping("/{userId}/subjects")

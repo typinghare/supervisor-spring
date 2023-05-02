@@ -13,10 +13,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Component
-public @interface ExceptionConfiguration {
+public @interface OverplayException {
     /**
-     * Returns the exception code of the annotated exception class.
-     * @return the exception code of the annotated exception class.
+     * Returns the type code of the annotated exception class.
+     * @return the type code of the annotated exception class.
      */
-    int exceptionCode();
+    int typeCode();
 }

@@ -23,7 +23,7 @@ public class TaskComment {
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 
-    @Column(name = "deleted_at", nullable = false)
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
     public Long getId() {

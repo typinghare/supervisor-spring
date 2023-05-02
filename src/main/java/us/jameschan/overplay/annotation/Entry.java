@@ -34,5 +34,5 @@ public @interface Entry {
      * Returns the exception message.
      * @return the exception message.
      */
-    String message() default "";
+    String message() default "Unknown exception.";
 }
