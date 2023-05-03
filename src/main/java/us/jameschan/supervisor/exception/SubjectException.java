@@ -8,13 +8,12 @@ import us.jameschan.overplay.stereo.BaseException;
 
 @OverplayException(typeCode = 11)
 public class SubjectException extends BaseException {
+    @Entry(code = 1, status = HttpStatus.NOT_FOUND, message = "Subject does not exist.")
+    public static SubjectException SUBJECT_NOT_FOUND;
+    @Entry(code = 2, status = HttpStatus.NOT_FOUND, message = "A subject with the same name already exists.")
+    public static SubjectException SUBJECT_ALREADY_EXIST;
+
     public SubjectException(OverplayManager overplayManager) {
         super(overplayManager);
     }
-
-    @Entry(code = 1, status = HttpStatus.NOT_FOUND, message = "Subject does not exist.")
-    public static SubjectException SUBJECT_NOT_FOUND;
-
-    @Entry(code = 2, status = HttpStatus.NOT_FOUND, message = "A subject with the same name already exists.")
-    public static SubjectException SUBJECT_ALREADY_EXIST;
 }

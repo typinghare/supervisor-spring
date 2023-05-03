@@ -50,7 +50,7 @@ public class SubjectController {
     @ResponseBody
     @Message("Successfully get all categories.")
     public List<CategoryDto> getCategoriesForSubject(@PathVariable("subjectId") Long subjectId) {
-        return categoryService.getCategoriesBySubjectId(subjectId).stream()
+        return categoryService.findCategoriesBySubjectId(subjectId).stream()
             .map(categoryService::toCategoryDto).toList();
     }
 }

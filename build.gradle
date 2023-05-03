@@ -23,6 +23,7 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.6'
     implementation 'org.springframework.boot:spring-boot-starter-aop:3.0.6'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     // Database and ORM.
     implementation 'com.mysql:mysql-connector-j:8.0.33'
@@ -39,4 +40,8 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('compileJava') {
+    inputs.files(tasks.named('processResources'))
 }

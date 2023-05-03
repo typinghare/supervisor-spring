@@ -1,5 +1,6 @@
 package us.jameschan.supervisor.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import us.jameschan.supervisor.dto.CategoryDto;
 import us.jameschan.supervisor.exception.CategoryException;
@@ -14,6 +15,7 @@ import static us.jameschan.supervisor.common.HelperFunctions.apply;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
+    @Autowired
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
@@ -30,9 +32,16 @@ public class CategoryService {
     }
 
     /**
+     * Retrieves category by its id.
+     */
+    public Category getCategory(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> CategoryException.CATEGORY_NOT_FOUND);
+    }
+
+    /**
      * Retrieves all categories by a given subject id.
      */
-    public List<Category> getCategoriesBySubjectId(Long subjectId) {
+    public List<Category> findCategoriesBySubjectId(Long subjectId) {
         return categoryRepository.findBySubjectId(subjectId);
     }
 

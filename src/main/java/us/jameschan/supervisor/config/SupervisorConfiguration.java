@@ -20,10 +20,12 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebMvc
 @PropertySource({
-    "classpath:database.properties",
     "classpath:.env.properties"
 })
 public class SupervisorConfiguration implements WebMvcConfigurer {
+    @Value("${hibernate.driver}")
+    private String hibernateDriver;
+
     @Value("${database.url}")
     private String databaseUrl;
 
@@ -40,7 +42,7 @@ public class SupervisorConfiguration implements WebMvcConfigurer {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setDriverClassName(hibernateDriver);
         dataSource.setUrl(databaseUrl + "?createDatabaseIfNotExist=true");
         dataSource.setUsername(databaseUsername);
         dataSource.setPassword(databasePassword);

@@ -1,16 +1,26 @@
 package us.jameschan.supervisor.service;
 
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import us.jameschan.supervisor.common.Throws;
+import us.jameschan.supervisor.common.TimestampRange;
 import us.jameschan.supervisor.constant.TaskAction;
 import us.jameschan.supervisor.constant.TaskStage;
+import us.jameschan.supervisor.dto.CategoryDto;
+import us.jameschan.supervisor.dto.SubjectDto;
 import us.jameschan.supervisor.dto.TaskDto;
 import us.jameschan.supervisor.exception.TaskException;
+import us.jameschan.supervisor.model.Category;
+import us.jameschan.supervisor.model.Subject;
 import us.jameschan.supervisor.model.Task;
 import us.jameschan.supervisor.repository.TaskRepository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static us.jameschan.supervisor.common.HelperFunctions.apply;
 
@@ -20,9 +30,16 @@ public class TaskService {
 
     private final UserService userService;
 
-    public TaskService(TaskRepository taskRepository, UserService userService) {
+    private final CategoryService categoryService;
+
+    private final SubjectService subjectService;
+
+    @Autowired
+    public TaskService(TaskRepository taskRepository, UserService userService, CategoryService categoryService, SubjectService subjectService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
+        this.categoryService = categoryService;
+        this.subjectService = subjectService;
     }
 
     /**
@@ -34,6 +51,16 @@ public class TaskService {
         return apply(new TaskDto(), it -> {
             it.setId(task.getId());
             it.setCategoryId(task.getCategoryId());
+
+            // category
+            final Category category = categoryService.getCategory(task.getCategoryId());
+            final CategoryDto categoryDto = categoryService.toCategoryDto(category);
+            it.setCategoryDto(categoryDto);
+
+            // category.subject
+            final Subject subject = subjectService.getSubject(category.getSubjectId());
+            final SubjectDto subjectDto = subjectService.toSubjectDto(subject);
+            categoryDto.setSubjectDto(subjectDto);
         });
     }
 
@@ -128,6 +155,36 @@ public class TaskService {
                 ? TaskStage.ENDED : null;
             default -> null;
         };
+    }
+
+    /**
+     * Retrieves tasks.
+     */
+    public List<Task> getTasks(TaskDto taskDto, TimestampRange timestampRange) {
+        final Specification<Task> taskSpecification = ((root, query, criteriaBuilder) -> {
+            final List<Predicate> predicateList = new ArrayList<>();
+
+            if (taskDto.getUserId() != null) {
+                predicateList.add(criteriaBuilder.equal(root.get("user_id"), taskDto.getUserId()));
+            }
+
+            if (taskDto.getStage() != null) {
+                predicateList.add(criteriaBuilder.equal(root.get("stage"), taskDto.getStage()));
+            }
+
+            final Timestamp startTimestamp = timestampRange.getStartTimestamp();
+            final Timestamp endTimestamp = timestampRange.getEndTimestamp();
+            if (startTimestamp != null) {
+                predicateList.add(criteriaBuilder.greaterThan(root.get("created_at"), startTimestamp));
+            }
+            if (endTimestamp != null) {
+                predicateList.add(criteriaBuilder.greaterThan(root.get("created_at"), endTimestamp));
+            }
+
+            return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
+        });
+
+        return taskRepository.findAll(taskSpecification);
     }
 
     /**
