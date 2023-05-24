@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebMvc
 @PropertySource({
-    "classpath:.env.properties"
+        "classpath:.env.properties"
 })
 public class SupervisorConfiguration implements WebMvcConfigurer {
     @Value("${hibernate.driver}")

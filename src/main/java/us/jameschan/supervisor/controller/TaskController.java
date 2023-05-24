@@ -1,15 +1,63 @@
 package us.jameschan.supervisor.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import us.jameschan.supervisor.annotation.Message;
+import us.jameschan.supervisor.constant.TaskAction;
+import us.jameschan.supervisor.dto.TaskCommentDto;
+import us.jameschan.supervisor.dto.TaskDto;
+import us.jameschan.supervisor.dto.TaskUpdateDto;
+import us.jameschan.supervisor.model.Task;
 import us.jameschan.supervisor.service.TaskService;
 
+import java.util.List;
+
 @Controller()
-@RequestMapping("task")
+@RequestMapping("tasks")
 public class TaskController {
     private final TaskService taskService;
 
+    @Autowired
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    @PostMapping("/")
+    @ResponseBody
+    @Message("Created the task successfully.")
+    public TaskDto createTask(@RequestParam Long categoryId) {
+        return taskService.toTaskDto(taskService.createTask(categoryId));
+    }
+
+    @PutMapping("/{taskId}/")
+    @ResponseBody
+    @Message("updated the task successfully.")
+    public TaskDto updateTask(
+            @PathVariable Long taskId,
+            @RequestBody TaskUpdateDto taskUpdateDto
+    ) {
+        final Integer taskAction = taskUpdateDto.getTaskAction();
+        if (taskAction != null) {
+            final Task task = taskService.updateTaskStage(taskId, TaskAction.fromNumber(taskAction));
+            return taskService.toTaskDto(task);
+        } else {
+            return null;
+        }
+    }
+
+    @DeleteMapping("/{taskId}/")
+    @ResponseBody
+    @Message("Deleted the task successfully.")
+    public void deleteTask(@PathVariable Long taskId) {
+        taskService.deleteTask(taskId);
+    }
+
+    @GetMapping("/{taskId}/comments/")
+    @ResponseBody
+    @Message("Got all comments of the task successfully.")
+    public List<TaskCommentDto> getAllCommentForTask(@PathVariable Long taskId) {
+        return taskService.getAllTaskComment(taskId)
+                .stream().map(taskService::toTaskCommentDto).toList();
     }
 }

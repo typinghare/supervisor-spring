@@ -6,17 +6,41 @@ package us.jameschan.supervisor.constant;
  */
 public enum TaskAction {
     // Starts a new task, transitioning it to the PENDING stage.
-    START,
+    START(0),
 
     // Pauses an ongoing task, transitioning it to the PAUSED stage.
-    PAUSE,
+    PAUSE(1),
 
     // Resumes a paused task, transitioning it back to the ONGOING stage.
-    RESUME,
+    RESUME(2),
 
     // Finishes a task, transitioning it to the ENDED stage.
-    FINISH,
+    FINISH(3),
 
     // Removes a task, causing it to no longer appear in the task list.
-    REMOVE;
+    REMOVE(4);
+
+    private final int number;
+
+    TaskAction(int number) {
+        this.number = number;
+    }
+
+    public static TaskAction fromNumber(Integer number) {
+        for (TaskAction taskAction : TaskAction.values()) {
+            if (taskAction.getNumber() == number) {
+                return taskAction;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the corresponding number of this task action.
+     * @return the corresponding number of this task action.
+     */
+    public int getNumber() {
+        return number;
+    }
 }

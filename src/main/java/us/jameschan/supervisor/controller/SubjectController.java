@@ -24,33 +24,33 @@ public class SubjectController {
 
     @PostMapping("/")
     @ResponseBody
-    @Message("Successfully created a subject.")
+    @Message("Created a subject successfully.")
     public SubjectDto createSubject(@RequestBody SubjectDto subjectDto) {
         return subjectService.toSubjectDto(subjectService.createSubject(subjectDto.getName()));
     }
 
-    @PutMapping("/{subjectId}")
+    @PutMapping("/{subjectId}/")
     @ResponseBody
-    @Message("Successfully updated a subject.")
+    @Message("Updated the subject successfully.")
     public SubjectDto deleteSubject(
-        @PathVariable("subjectId") Long subjectId,
-        @RequestBody SubjectDto subjectDto
+            @PathVariable Long subjectId,
+            @RequestBody SubjectDto subjectDto
     ) {
         return subjectService.toSubjectDto(subjectService.updateSubject(subjectId, subjectDto));
     }
 
-    @DeleteMapping("/{subjectId}")
+    @DeleteMapping("/{subjectId}/")
     @ResponseBody
-    @Message("")
-    public void deleteSubject(@PathVariable("subjectId") Long subjectId) {
+    @Message("Deleted the subject successfully.")
+    public void deleteSubject(@PathVariable Long subjectId) {
         subjectService.deleteSubject(subjectId);
     }
 
-    @GetMapping("/{subjectId}/categories")
+    @GetMapping("/{subjectId}/categories/")
     @ResponseBody
-    @Message("Successfully get all categories.")
-    public List<CategoryDto> getCategoriesForSubject(@PathVariable("subjectId") Long subjectId) {
+    @Message("Got all categories successfully.")
+    public List<CategoryDto> getCategoriesForSubject(@PathVariable Long subjectId) {
         return categoryService.findCategoriesBySubjectId(subjectId).stream()
-            .map(categoryService::toCategoryDto).toList();
+                .map(categoryService::toCategoryDto).toList();
     }
 }

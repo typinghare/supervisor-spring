@@ -8,10 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -20,14 +17,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import us.jameschan.overplay.stereo.BaseException;
+import us.jameschan.overplay.BaseException;
 import us.jameschan.supervisor.annotation.Message;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import static us.jameschan.supervisor.common.HelperFunctions.apply;
+import static us.jameschan.neater.StaticFunctions.let;
 
 @NonNullApi
 @ControllerAdvice
@@ -36,38 +33,34 @@ public class SupervisorControllerAdvice implements ResponseBodyAdvice<Object> {
 
     private final Gson gson = new Gson();
 
-    /**
-     * Base exception handlers.
-     */
-    @ExceptionHandler(value = BaseException.class)
-    public ResponseEntity<String> handleBaseException(final BaseException baseException) {
+    @ExceptionHandler(BaseException.class)
+    public ResponseEntity<Map<String, Object>> handleBaseException(final BaseException baseException) {
         final Map<String, Object> body = ImmutableMap.<String, Object>builder()
-            .put("message", baseException.getMessage())
-            .put("errorCode", baseException.getErrorCode())
-            .build();
+                .put("message", baseException.getMessage())
+                .put("errorCode", baseException.getErrorCode())
+                .build();
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        final HttpHeaders headers = let(new HttpHeaders(), it -> {
+            it.setContentType(MediaType.APPLICATION_JSON);
+        });
 
-        return new ResponseEntity<>(gson.toJson(body), headers, baseException.getHttpStatus());
+        return new ResponseEntity<>(body, headers, HttpStatus.FORBIDDEN);
     }
 
-    /**
-     * General exception handlers.
-     */
-    @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<String> handleException(final Exception exception) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleException(final Exception exception) {
         final Map<String, Object> body = ImmutableMap.<String, Object>builder()
-            .put("message", "Unknown Server Error.")
-            .put("errorCode", "0000000")
-            .build();
+                .put("message", "Unknown Server Error.")
+                .put("errorCode", "10000")
+                .build();
 
         logger.error(exception.getMessage());
+        exception.printStackTrace();
 
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        return new ResponseEntity<>(gson.toJson(body), headers, HttpStatusCode.valueOf(500));
+        return new ResponseEntity<>(body, headers, HttpStatusCode.valueOf(500));
     }
 
     @Override
@@ -82,18 +75,21 @@ public class SupervisorControllerAdvice implements ResponseBodyAdvice<Object> {
      */
     @Override
     public Object beforeBodyWrite(
-        @Nullable Object data,
-        MethodParameter returnType,
-        MediaType selectedContentType,
-        Class<? extends HttpMessageConverter<?>> selectedConverterType,
-        ServerHttpRequest request,
-        ServerHttpResponse response) {
+            @Nullable Object data,
+            MethodParameter returnType,
+            MediaType selectedContentType,
+            Class<? extends HttpMessageConverter<?>> selectedConverterType,
+            ServerHttpRequest request,
+            ServerHttpResponse response) {
+        if (data instanceof Map<?, ?> && ((Map<?, ?>) data).containsKey("errorCode")) {
+            return data;
+        }
 
         final HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
         final HandlerMethod handlerMethod = (HandlerMethod) servletRequest.getAttribute(SupervisorInterceptor.REQUEST_ATTRIBUTE_HANDLER);
         final Method controllerMethod = handlerMethod.getMethod();
 
-        return apply(new HashMap<String, Object>(), it -> {
+        return let(new HashMap<>(), it -> {
             final Message message = controllerMethod.getAnnotation(Message.class);
             if (message != null) {
                 it.put("message", message.value());

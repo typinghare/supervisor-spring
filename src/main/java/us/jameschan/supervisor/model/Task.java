@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.beans.JavaBean;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "task")
+@JavaBean
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +32,10 @@ public class Task {
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
-    @UpdateTimestamp
     @Column(name = "started_at")
     private Timestamp startedAt;
 

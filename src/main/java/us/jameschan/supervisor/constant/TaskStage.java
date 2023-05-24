@@ -40,8 +40,8 @@ public enum TaskStage {
     }
 
     /**
-     * Returns the corresponding number of a task.
-     * @return the corresponding number of a task.
+     * Returns the corresponding number of this task stage.
+     * @return the corresponding number of this task stage.
      */
     public int getNumber() {
         return number;

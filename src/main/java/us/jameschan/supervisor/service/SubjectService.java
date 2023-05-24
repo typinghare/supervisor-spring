@@ -8,8 +8,9 @@ import us.jameschan.supervisor.model.Subject;
 import us.jameschan.supervisor.repository.SubjectRepository;
 
 import java.util.List;
+import java.util.Objects;
 
-import static us.jameschan.supervisor.common.HelperFunctions.apply;
+import static us.jameschan.neater.StaticFunctions.createBean;
 
 @Service
 public class SubjectService {
@@ -29,7 +30,7 @@ public class SubjectService {
     public SubjectDto toSubjectDto(Subject subject) {
         if (subject == null) return null;
 
-        return apply(new SubjectDto(), it -> {
+        return createBean(SubjectDto.class, it -> {
             it.setId(subject.getId());
             it.setUserId(subject.getUserId());
             it.setName(subject.getName());
@@ -41,7 +42,7 @@ public class SubjectService {
      */
     public Subject getSubject(Long subjectId) {
         return subjectRepository.findById(subjectId)
-            .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
+                .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
     }
 
     /**
@@ -60,7 +61,7 @@ public class SubjectService {
             throw SubjectException.SUBJECT_ALREADY_EXIST;
         }
 
-        return subjectRepository.save(apply(new Subject(), it -> {
+        return subjectRepository.save(createBean(Subject.class, it -> {
             it.setUserId(userId);
             it.setName(name);
         }));
@@ -80,14 +81,13 @@ public class SubjectService {
      * Updates a subject.
      */
     public Subject updateSubject(Long subjectId, SubjectDto subjectDto) {
-        if (subjectRepository.findById(subjectId).isEmpty()) {
-            throw SubjectException.SUBJECT_NOT_FOUND;
+        final Subject subject = getSubject(subjectId);
+        final Long userId = userService.getUserIdByToken();
+        if (!Objects.equals(userId, subject.getUserId())) {
+            throw SubjectException.NO_PERMISSION_UPDATE_SUBJECT;
         }
 
-        final Subject subject = apply(new Subject(), it -> {
-            it.setId(subjectId);
-            it.setName(subjectDto.getName());
-        });
+        subject.setName(subjectDto.getName());
 
         return subjectRepository.save(subject);
     }

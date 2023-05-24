@@ -1,45 +1,56 @@
 package us.jameschan.supervisor.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Service;
-import us.jameschan.supervisor.common.Throws;
-import us.jameschan.supervisor.common.TimestampRange;
 import us.jameschan.supervisor.constant.TaskAction;
 import us.jameschan.supervisor.constant.TaskStage;
 import us.jameschan.supervisor.dto.CategoryDto;
-import us.jameschan.supervisor.dto.SubjectDto;
+import us.jameschan.supervisor.dto.TaskCommentDto;
 import us.jameschan.supervisor.dto.TaskDto;
 import us.jameschan.supervisor.exception.TaskException;
 import us.jameschan.supervisor.model.Category;
-import us.jameschan.supervisor.model.Subject;
 import us.jameschan.supervisor.model.Task;
+import us.jameschan.supervisor.model.TaskComment;
+import us.jameschan.supervisor.repository.TaskCommentRepository;
 import us.jameschan.supervisor.repository.TaskRepository;
+import us.jameschan.supervisor.util.Dates;
+import us.jameschan.supervisor.util.Pagination;
+import us.jameschan.supervisor.util.TimestampRange;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static us.jameschan.supervisor.common.HelperFunctions.apply;
+import static us.jameschan.neater.StaticFunctions.createBean;
+import static us.jameschan.neater.StaticFunctions.throwIfNull;
 
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
-
+    private final TaskCommentRepository taskCommentRepository;
     private final UserService userService;
-
     private final CategoryService categoryService;
 
-    private final SubjectService subjectService;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    @Autowired
-    public TaskService(TaskRepository taskRepository, UserService userService, CategoryService categoryService, SubjectService subjectService) {
+    public TaskService(
+            TaskRepository taskRepository,
+            TaskCommentRepository taskCommentRepository,
+            UserService userService,
+            CategoryService categoryService
+    ) {
         this.taskRepository = taskRepository;
+        this.taskCommentRepository = taskCommentRepository;
         this.userService = userService;
         this.categoryService = categoryService;
-        this.subjectService = subjectService;
     }
 
     /**
@@ -48,19 +59,36 @@ public class TaskService {
     public TaskDto toTaskDto(Task task) {
         if (task == null) return null;
 
-        return apply(new TaskDto(), it -> {
+        return createBean(TaskDto.class, it -> {
             it.setId(task.getId());
+            it.setUserId(task.getUserId());
             it.setCategoryId(task.getCategoryId());
+            it.setStage(task.getStage());
+            it.setDuration(task.getDuration());
+            it.setCreatedAt(Dates.toDateString(task.getCreatedAt()));
+            it.setUpdatedAt(Dates.toDateString(task.getUpdatedAt()));
+            it.setStartedAt(Dates.toDateString(task.getStartedAt()));
+            it.setResumedAt(Dates.toDateString(task.getResumedAt()));
+            it.setEndedAt(Dates.toDateString(task.getEndedAt()));
 
             // category
-            final Category category = categoryService.getCategory(task.getCategoryId());
+            final Category category = categoryService.getCategoryById(task.getCategoryId());
             final CategoryDto categoryDto = categoryService.toCategoryDto(category);
             it.setCategoryDto(categoryDto);
+        });
+    }
 
-            // category.subject
-            final Subject subject = subjectService.getSubject(category.getSubjectId());
-            final SubjectDto subjectDto = subjectService.toSubjectDto(subject);
-            categoryDto.setSubjectDto(subjectDto);
+    /**
+     * Converts a task comment to task comment DTO.
+     */
+    public TaskCommentDto toTaskCommentDto(TaskComment taskComment) {
+        if (taskComment == null) return null;
+
+        return createBean(TaskCommentDto.class, it -> {
+            it.setId(taskComment.getId());
+            it.setTaskId(taskComment.getTaskId());
+            it.setContent(taskComment.getContent());
+            it.setCreatedAt(Dates.toDateString(taskComment.getCreatedAt()));
         });
     }
 
@@ -78,7 +106,7 @@ public class TaskService {
         final Long userId = userService.getUserIdByToken();
 
         final Timestamp timestamp = new Timestamp(new Date().getTime());
-        final Task task = apply(new Task(), it -> {
+        final Task task = createBean(Task.class, it -> {
             it.setUserId(userId);
             it.setCategoryId(categoryId);
             it.setStage(TaskStage.PENDING.getNumber());
@@ -94,10 +122,10 @@ public class TaskService {
     }
 
     /**
-     * Updates a task by applying an action on it.
+     * Updates a task by createBeaning an action on it.
      * @param taskId the id of the task.
      * @param action the action to be applied on the task.
-     * @return the task after applying the action.
+     * @return the task after createBeaning the action.
      */
     public Task updateTaskStage(Long taskId, TaskAction action) {
         final Task task = taskRepository.findById(taskId).orElseThrow(() -> TaskException.TASK_NOT_FOUND);
@@ -116,7 +144,7 @@ public class TaskService {
         // Update stage from the original stage to the new stage.
         task.setStage(newStage.getNumber());
 
-        // Update various times.
+        // Update updated time, resumed time, and other time.
         final Timestamp timestamp = new Timestamp(new Date().getTime());
         switch (newStage) {
             case ONGOING -> {
@@ -126,13 +154,15 @@ public class TaskService {
                 task.setResumedAt(timestamp);
             }
             case PAUSED -> {
-                Throws.ifNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
+                throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
                 task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
                 task.setResumedAt(null);
             }
             case ENDED -> {
-                Throws.ifNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
-                task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
+                if (originalStage == TaskStage.ONGOING) {
+                    throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
+                    task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
+                }
                 task.setResumedAt(null);
                 task.setEndedAt(timestamp);
             }
@@ -143,7 +173,7 @@ public class TaskService {
     }
 
     /**
-     * Changes the stage of a task by applying the given action.
+     * Changes the stage of a task by createBeaning the given action.
      * @return the new stage; null if it cannot finish.
      */
     public TaskStage changeStage(TaskStage originalStage, TaskAction taskAction) {
@@ -152,7 +182,7 @@ public class TaskService {
             case PAUSE -> originalStage == TaskStage.ONGOING ? TaskStage.PAUSED : null;
             case RESUME -> originalStage == TaskStage.PAUSED ? TaskStage.ONGOING : null;
             case FINISH -> originalStage == TaskStage.ONGOING || originalStage == TaskStage.PAUSED
-                ? TaskStage.ENDED : null;
+                    ? TaskStage.ENDED : null;
             default -> null;
         };
     }
@@ -160,31 +190,80 @@ public class TaskService {
     /**
      * Retrieves tasks.
      */
-    public List<Task> getTasks(TaskDto taskDto, TimestampRange timestampRange) {
-        final Specification<Task> taskSpecification = ((root, query, criteriaBuilder) -> {
-            final List<Predicate> predicateList = new ArrayList<>();
+    public List<Task> getTasks(TaskDto taskDto, TimestampRange timestampRange, Pagination pagination) {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Task> criteriaQuery = criteriaBuilder.createQuery(Task.class);
+        final Root<Task> root = criteriaQuery.from(Task.class);
+        final List<Predicate> predicateList = new ArrayList<>();
 
-            if (taskDto.getUserId() != null) {
-                predicateList.add(criteriaBuilder.equal(root.get("user_id"), taskDto.getUserId()));
+        // Specify soft deleted.
+        predicateList.add(criteriaBuilder.isNull(root.get("deletedAt")));
+
+        // Specify user.
+        if (taskDto.getUserId() != null) {
+            predicateList.add(criteriaBuilder.equal(root.get("userId"), taskDto.getUserId()));
+        }
+
+        // Specify category.
+        if (taskDto.getCategoryId() != null) {
+            predicateList.add(criteriaBuilder.equal(root.get("category_id"), taskDto.getCategoryId()));
+        }
+
+        // Specify stage.
+        if (taskDto.getStage() != null) {
+            predicateList.add(criteriaBuilder.equal(root.get("stage"), taskDto.getStage()));
+        }
+
+        // Specify time range.
+        final Timestamp startTimestamp = timestampRange.getStartTimestamp();
+        final Timestamp endTimestamp = timestampRange.getEndTimestamp();
+        if (startTimestamp != null) {
+            predicateList.add(criteriaBuilder.greaterThan(root.get("createdAt"), startTimestamp));
+        }
+        if (endTimestamp != null) {
+            predicateList.add(criteriaBuilder.lessThan(root.get("createdAt"), endTimestamp));
+        }
+
+        // Combine the conditions using 'and'
+        criteriaQuery.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
+
+        // Set order.
+        criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+
+        // Create the TypedQuery
+        TypedQuery<Task> typedQuery = entityManager.createQuery(criteriaQuery);
+
+        // Set pagination
+        final Integer limit = pagination.limit();
+        final Integer page = pagination.page();
+        if (limit != null) {
+            typedQuery.setMaxResults(limit);
+            if (page != null) {
+                typedQuery.setFirstResult((page - 1) * limit);
             }
+        }
 
-            if (taskDto.getStage() != null) {
-                predicateList.add(criteriaBuilder.equal(root.get("stage"), taskDto.getStage()));
-            }
+        // Execute the query
+        return typedQuery.getResultList();
+    }
 
-            final Timestamp startTimestamp = timestampRange.getStartTimestamp();
-            final Timestamp endTimestamp = timestampRange.getEndTimestamp();
-            if (startTimestamp != null) {
-                predicateList.add(criteriaBuilder.greaterThan(root.get("created_at"), startTimestamp));
-            }
-            if (endTimestamp != null) {
-                predicateList.add(criteriaBuilder.greaterThan(root.get("created_at"), endTimestamp));
-            }
+    /**
+     * Deletes a specified task.
+     */
+    public void deleteTask(Long taskId) {
+        final Task task = getTaskById(taskId);
+        userService.checkUserToBe(task.getUserId());
 
-            return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
-        });
+        // Soft delete.
+        task.setDeletedAt(new Timestamp(new Date().getTime()));
+        taskRepository.save(task);
+    }
 
-        return taskRepository.findAll(taskSpecification);
+    /**
+     * Retrieves all comments for a specified task.
+     */
+    public List<TaskComment> getAllTaskComment(Long taskId) {
+        return taskCommentRepository.findAllByTaskId(taskId);
     }
 
     /**
@@ -192,6 +271,6 @@ public class TaskService {
      */
     private int getDifferenceInMinutes(Timestamp timestamp) {
         final double differenceInSeconds = new Date().getTime() - timestamp.getTime();
-        return (int) Math.floor(differenceInSeconds / 60);
+        return (int) Math.floor(differenceInSeconds / 60000);
     }
 }

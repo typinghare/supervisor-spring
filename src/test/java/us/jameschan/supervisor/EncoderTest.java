@@ -19,9 +19,10 @@ public class EncoderTest {
 
     @Test
     void encodingTest() {
-        final String rawPassword = "123456Abc";
+        final String rawPassword = "123456ABC!";
         final String encodedString = encoder.encode(rawPassword);
 
+        System.out.println(encodedString);
         assertEquals(encodedString.length(), 80);
         assertTrue(encoder.matches(rawPassword, encodedString));
     }

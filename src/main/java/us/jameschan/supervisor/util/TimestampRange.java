@@ -1,4 +1,4 @@
-package us.jameschan.supervisor.common;
+package us.jameschan.supervisor.util;
 
 import java.sql.Timestamp;
 
@@ -14,8 +14,8 @@ public class TimestampRange {
 
     public TimestampRange(Long startTimestamp, Long endTimestamp) {
         this(
-            startTimestamp == null ? null : new Timestamp(startTimestamp),
-            endTimestamp == null ? null : new Timestamp(endTimestamp)
+                startTimestamp == null ? null : new Timestamp(startTimestamp),
+                endTimestamp == null ? null : new Timestamp(endTimestamp)
         );
     }
 

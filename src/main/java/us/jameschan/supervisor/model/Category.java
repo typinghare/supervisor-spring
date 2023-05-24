@@ -2,8 +2,11 @@ package us.jameschan.supervisor.model;
 
 import jakarta.persistence.*;
 
+import java.beans.JavaBean;
+
 @Entity
 @Table(name = "category")
+@JavaBean
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

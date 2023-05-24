@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.util;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,11 @@ public class Token {
         claims.put("id", userId);
 
         return Jwts.builder()
-            .setIssuedAt(date)
-            .setExpiration(expiryDate)
-            .signWith(secretKey)
-            .setClaims(claims)
-            .compact();
+                .setIssuedAt(date)
+                .setExpiration(expiryDate)
+                .signWith(secretKey)
+                .setClaims(claims)
+                .compact();
     }
 
     /**
@@ -52,13 +53,14 @@ public class Token {
      */
     public Long getUserId(String token) {
         try {
-            final var parser = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build();
+            final JwtParser parser = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build();
 
             final Claims claims = parser.parseClaimsJws(token).getBody();
-            return (Long) claims.get("id");
+            return (long) ((double) claims.get("id"));
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

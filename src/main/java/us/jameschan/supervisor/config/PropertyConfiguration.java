@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @PropertySource({
-    "classpath:.env.properties"
+        "classpath:.env.properties"
 })
 public class PropertyConfiguration {
     @Value("${encoder.saltLength}")

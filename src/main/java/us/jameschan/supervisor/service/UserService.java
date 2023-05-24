@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import us.jameschan.supervisor.common.Throws;
 import us.jameschan.supervisor.dto.UserDto;
 import us.jameschan.supervisor.dto.UserSignInDto;
 import us.jameschan.supervisor.dto.UserSignInResponseDto;
@@ -18,7 +17,8 @@ import us.jameschan.supervisor.util.Token;
 
 import java.util.Objects;
 
-import static us.jameschan.supervisor.common.HelperFunctions.apply;
+import static us.jameschan.neater.StaticFunctions.createBean;
+import static us.jameschan.neater.StaticFunctions.throwIfNull;
 
 @Service
 public class UserService {
@@ -46,7 +46,7 @@ public class UserService {
      * Converts a user to user dto.
      */
     public UserDto toUserDto(User user) {
-        return apply(new UserDto(), it -> {
+        return createBean(UserDto.class, it -> {
             it.setId(user.getId());
             it.setEmail(user.getEmail());
             it.setUsername(user.getUsername());
@@ -61,13 +61,13 @@ public class UserService {
     public UserSignInResponseDto signIn(UserSignInDto userSignInDto) {
         final String username = userSignInDto.getUsername();
         final User user = userRepository.findFirstByUsername(username)
-            .orElseThrow(() -> UserException.USER_NOT_FOUND);
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
 
         if (!encoder.matches(userSignInDto.getPassword(), user.getAuthString())) {
             throw UserException.INCORRECT_PASSWORD;
         }
 
-        return apply(new UserSignInResponseDto(), it -> {
+        return createBean(UserSignInResponseDto.class, it -> {
             it.setId(user.getId());
             it.setToken(token.generate(user.getId()));
             it.setEmail(user.getEmail());
@@ -78,24 +78,25 @@ public class UserService {
     /**
      * Users signs up.
      */
-    public UserDto signUp(UserSignUpDto userSignUpDto) {
+    public UserSignInResponseDto signUp(UserSignUpDto userSignUpDto) {
         final String email = userSignUpDto.getEmail();
-        Throws.ifNull(email, UserException.MISSING_EMAIL);
+        throwIfNull(email, UserException.MISSING_EMAIL);
 
         if (userRepository.findFirstByEmail(email).isPresent()) {
             throw UserException.EMAIL_ALREADY_SIGNED_UP;
         }
 
-        final User user = userRepository.save(apply(new User(), it -> {
+        final User user = userRepository.save(createBean(User.class, it -> {
             it.setEmail(email);
             it.setUsername(userSignUpDto.getUsername());
             it.setAuthString(getAuthString(userSignUpDto.getPassword()));
         }));
 
-        return apply(new UserDto(), it -> {
+        return createBean(UserSignInResponseDto.class, it -> {
             it.setId(user.getId());
             it.setEmail(user.getEmail());
             it.setUsername(user.getUsername());
+            it.setToken(token.generate(user.getId()));
         });
     }
 
@@ -115,13 +116,13 @@ public class UserService {
      */
     public Long getUserIdByToken() {
         final HttpServletRequest request
-            = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+                = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         final String tokenString = request.getHeader("token");
 
-        Throws.ifNull(tokenString, UserException.MISSING_TOKEN);
+        throwIfNull(tokenString, UserException.MISSING_TOKEN);
 
         final Long userId = token.getUserId(tokenString);
-        Throws.ifNull(userId, UserException.TOKEN_VALIDATION_FAILS);
+        throwIfNull(userId, UserException.TOKEN_VALIDATION_FAILS);
 
         return userId;
     }

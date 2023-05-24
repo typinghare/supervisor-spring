@@ -1,18 +1,15 @@
-package us.jameschan.overplay.stereo;
+package us.jameschan.overplay;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import us.jameschan.overplay.OverplayManager;
 import us.jameschan.overplay.annotation.OverplayException;
 
 @OverplayException(typeCode = 0)
 public class BaseException extends RuntimeException {
-    protected final OverplayManager overplayManager;
-
-    @Autowired
-    protected BaseException(OverplayManager overplayManager) {
-        this.overplayManager = overplayManager;
-    }
+    /**
+     * Overplay manager.
+     */
+    protected OverplayManager overplayManager;
 
     /**
      * Returns the error code of this exception.
@@ -36,8 +33,8 @@ public class BaseException extends RuntimeException {
      */
     public String getErrorMessage() {
         return String.format("%s: %s",
-            overplayManager.getEntryName(this),
-            overplayManager.getMessage(this)
+                overplayManager.getEntryName(this),
+                overplayManager.getMessage(this)
         );
     }
 

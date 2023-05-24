@@ -3,10 +3,12 @@ package us.jameschan.supervisor.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.beans.JavaBean;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "task_comment")
+@JavaBean
 public class TaskComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

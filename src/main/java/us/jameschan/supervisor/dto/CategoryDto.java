@@ -7,7 +7,6 @@ public class CategoryDto {
     private Long id;
     private Long subjectId;
     private String name;
-    private SubjectDto subjectDto;
 
     public Long getId() {
         return id;
@@ -31,13 +30,5 @@ public class CategoryDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public SubjectDto getSubjectDto() {
-        return subjectDto;
-    }
-
-    public void setSubjectDto(SubjectDto subjectDto) {
-        this.subjectDto = subjectDto;
     }
 }

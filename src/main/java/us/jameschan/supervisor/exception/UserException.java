@@ -1,10 +1,9 @@
 package us.jameschan.supervisor.exception;
 
 import org.springframework.http.HttpStatus;
-import us.jameschan.overplay.OverplayManager;
+import us.jameschan.overplay.BaseException;
 import us.jameschan.overplay.annotation.Entry;
 import us.jameschan.overplay.annotation.OverplayException;
-import us.jameschan.overplay.stereo.BaseException;
 
 /**
  * User exception.
@@ -25,8 +24,4 @@ public class UserException extends BaseException {
     public static UserException EMAIL_ALREADY_SIGNED_UP;
     @Entry(code = 7, status = HttpStatus.BAD_REQUEST, message = "Missing email.")
     public static UserException MISSING_EMAIL;
-
-    protected UserException(OverplayManager overplayManager) {
-        super(overplayManager);
-    }
 }

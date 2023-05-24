@@ -3,8 +3,6 @@ package us.jameschan.overplay;
 
 import org.springframework.http.HttpStatus;
 import us.jameschan.overplay.exception.BaseExceptionEntryNotFoundException;
-import us.jameschan.overplay.exception.BaseExceptionNotRegisteredException;
-import us.jameschan.overplay.stereo.BaseException;
 
 import java.util.HashMap;
 import java.util.Map;

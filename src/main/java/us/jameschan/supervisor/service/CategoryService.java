@@ -4,27 +4,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import us.jameschan.supervisor.dto.CategoryDto;
 import us.jameschan.supervisor.exception.CategoryException;
+import us.jameschan.supervisor.exception.SubjectException;
 import us.jameschan.supervisor.model.Category;
+import us.jameschan.supervisor.model.Subject;
 import us.jameschan.supervisor.repository.CategoryRepository;
+import us.jameschan.supervisor.repository.SubjectRepository;
 
 import java.util.List;
 
-import static us.jameschan.supervisor.common.HelperFunctions.apply;
+import static us.jameschan.neater.StaticFunctions.createBean;
 
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final SubjectRepository subjectRepository;
+    private final UserService userService;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository,
+                           SubjectRepository subjectRepository, UserService userService) {
         this.categoryRepository = categoryRepository;
+        this.subjectRepository = subjectRepository;
+        this.userService = userService;
     }
 
     /**
      * Converts a category to category DTO.
      */
     public CategoryDto toCategoryDto(Category category) {
-        return apply(new CategoryDto(), it -> {
+        return createBean(CategoryDto.class, it -> {
             it.setId(category.getId());
             it.setName(category.getName());
             it.setSubjectId(category.getSubjectId());
@@ -34,8 +42,10 @@ public class CategoryService {
     /**
      * Retrieves category by its id.
      */
-    public Category getCategory(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> CategoryException.CATEGORY_NOT_FOUND);
+    public Category getCategoryById(Long categoryId) {
+        return categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> CategoryException.CATEGORY_NOT_FOUND);
     }
 
     /**
@@ -53,7 +63,13 @@ public class CategoryService {
             throw CategoryException.CATEGORY_ALREADY_EXIST;
         }
 
-        return categoryRepository.save(apply(new Category(), it -> {
+        final Subject subject = subjectRepository
+                .findById(subjectId)
+                .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
+        userService.checkUserToBe(subject.getUserId());
+
+        return categoryRepository.save(createBean(Category.class, it -> {
+            it.setUserId(subject.getUserId());
             it.setSubjectId(subjectId);
             it.setName(categoryName);
         }));
@@ -64,9 +80,12 @@ public class CategoryService {
      * @param categoryId the id of the category to delete.
      */
     public void deleteCategory(Long categoryId) {
-        if (categoryRepository.findById(categoryId).isEmpty()) {
-            throw CategoryException.CATEGORY_NOT_FOUND;
-        }
+        final Category category = getCategoryById(categoryId);
+
+        final Subject subject = subjectRepository
+                .findById(category.getSubjectId())
+                .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
+        userService.checkUserToBe(subject.getUserId());
 
         categoryRepository.deleteById(categoryId);
     }
@@ -75,14 +94,10 @@ public class CategoryService {
      * Updates a category.
      */
     public Category updateCategory(Long categoryId, CategoryDto categoryDto) {
-        if (categoryRepository.findById(categoryId).isEmpty()) {
-            throw CategoryException.CATEGORY_NOT_FOUND;
-        }
+        final Category category = getCategoryById(categoryId);
+        userService.checkUserToBe(category.getUserId());
 
-        final Category category = apply(new Category(), it -> {
-            it.setId(categoryId);
-            it.setName(categoryDto.getName());
-        });
+        category.setName(categoryDto.getName());
 
         return categoryRepository.save(category);
     }
