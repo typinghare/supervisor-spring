@@ -3,7 +3,7 @@ package us.jameschan.supervisor.dto;
 import java.beans.JavaBean;
 
 @JavaBean
-public class UserSignInResponseDto {
+public class UserTokenDto {
     private Long id;
     private String email;
     private String username;

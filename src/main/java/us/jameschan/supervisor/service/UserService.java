@@ -7,7 +7,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import us.jameschan.supervisor.dto.UserDto;
 import us.jameschan.supervisor.dto.UserSignInDto;
-import us.jameschan.supervisor.dto.UserSignInResponseDto;
+import us.jameschan.supervisor.dto.UserTokenDto;
 import us.jameschan.supervisor.dto.UserSignUpDto;
 import us.jameschan.supervisor.exception.UserException;
 import us.jameschan.supervisor.model.User;
@@ -58,7 +58,7 @@ public class UserService {
      * @throws UserException if user does not exist.
      * @throws UserException if the password is not correct.
      */
-    public UserSignInResponseDto signIn(UserSignInDto userSignInDto) {
+    public UserTokenDto signIn(UserSignInDto userSignInDto) {
         final String username = userSignInDto.getUsername();
         final User user = userRepository.findFirstByUsername(username)
                 .orElseThrow(() -> UserException.USER_NOT_FOUND);
@@ -67,7 +67,7 @@ public class UserService {
             throw UserException.INCORRECT_PASSWORD;
         }
 
-        return createBean(UserSignInResponseDto.class, it -> {
+        return createBean(UserTokenDto.class, it -> {
             it.setId(user.getId());
             it.setToken(token.generate(user.getId()));
             it.setEmail(user.getEmail());
@@ -78,7 +78,7 @@ public class UserService {
     /**
      * Users signs up.
      */
-    public UserSignInResponseDto signUp(UserSignUpDto userSignUpDto) {
+    public UserTokenDto signUp(UserSignUpDto userSignUpDto) {
         final String email = userSignUpDto.getEmail();
         throwIfNull(email, UserException.MISSING_EMAIL);
 
@@ -92,7 +92,7 @@ public class UserService {
             it.setAuthString(getAuthString(userSignUpDto.getPassword()));
         }));
 
-        return createBean(UserSignInResponseDto.class, it -> {
+        return createBean(UserTokenDto.class, it -> {
             it.setId(user.getId());
             it.setEmail(user.getEmail());
             it.setUsername(user.getUsername());

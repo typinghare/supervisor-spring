@@ -32,14 +32,14 @@ public class UserController {
     @PostMapping("/")
     @Message("User signed up successfully")
     @ResponseBody
-    public UserSignInResponseDto signUp(@RequestBody UserSignUpDto userSignUpDto) {
+    public UserTokenDto signUp(@RequestBody UserSignUpDto userSignUpDto) {
         return userService.signUp(userSignUpDto);
     }
 
-    @PutMapping("/")
+    @PutMapping("/auth/")
     @Message("User signed in successfully.")
     @ResponseBody
-    public UserSignInResponseDto signIn(@RequestBody UserSignInDto userSignInDto) {
+    public UserTokenDto signIn(@RequestBody UserSignInDto userSignInDto) {
         return userService.signIn(userSignInDto);
     }
 
