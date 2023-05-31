@@ -36,7 +36,7 @@ public class UserController {
         return userService.signUp(userSignUpDto);
     }
 
-    @PutMapping("/auth/")
+    @PostMapping("/auth/")
     @Message("User signed in successfully.")
     @ResponseBody
     public UserTokenDto signIn(@RequestBody UserSignInDto userSignInDto) {
@@ -65,17 +65,17 @@ public class UserController {
                 .map(subjectService::toSubjectDto).toList();
     }
 
-    @GetMapping("/{userId}/tasks")
+    @GetMapping("/{userId}/tasks/")
     @ResponseBody
     @Message("Got all tasks successfully.")
-    public List<TaskDto> getTasks(
+    public List<TaskDto> getTasksForUser(
             @PathVariable Long userId,
             @RequestParam Long fromTimestamp,
             @RequestParam Long toTimestamp,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Integer taskStage,
             @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) Integer page
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Integer taskStage
     ) {
         final TaskDto taskDto = createBean(TaskDto.class, it -> {
             it.setCategoryId(categoryId);

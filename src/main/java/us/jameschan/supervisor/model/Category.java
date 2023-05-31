@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Comment;
 
 import java.beans.JavaBean;
 
@@ -14,12 +15,15 @@ public class Category {
     private Long id;
 
     @Column(name = "subject_id", nullable = false)
+    @Comment("The id of the subject to which this category belong.")
     private Long subjectId;
 
     @Column(name = "user_id", nullable = false)
+    @Comment("The id of the user to which this category belong.")
     private Long userId;
 
     @Column(name = "name", nullable = false, length = 128)
+    @Comment("The name of this category.")
     private String name;
 
     public Long getId() {

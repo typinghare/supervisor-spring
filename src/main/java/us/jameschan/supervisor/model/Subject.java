@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Comment;
 
 import java.beans.JavaBean;
 
@@ -14,9 +15,11 @@ public class Subject {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
+    @Comment("The id of the user to which this subject belong.")
     private Long userId;
 
     @Column(name = "name", nullable = false, length = 32)
+    @Comment("The name of this subject.")
     private String name;
 
     public Long getId() {

@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.beans.JavaBean;
@@ -16,9 +17,11 @@ public class TaskComment {
     private Long id;
 
     @Column(name = "task_id", nullable = false)
+    @Comment("The id of the task to which this comment belong.")
     private Long taskId;
 
     @Column(name = "content", nullable = false)
+    @Comment("The content of this comment.")
     private String content;
 
     @CreationTimestamp

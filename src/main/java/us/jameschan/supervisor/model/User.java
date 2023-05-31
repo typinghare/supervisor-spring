@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Comment;
 
 import java.beans.JavaBean;
 
@@ -14,12 +15,15 @@ public class User {
     private Long id;
 
     @Column(name = "email", nullable = false, length = 128)
+    @Comment("The email for this user.")
     private String email;
 
     @Column(name = "username", nullable = false, length = 32)
+    @Comment("The username for this user.")
     private String username;
 
     @Column(name = "auth_string", nullable = false, length = 80)
+    @Comment("The authentication string for this user.")
     private String authString;
 
     public Long getId() {
