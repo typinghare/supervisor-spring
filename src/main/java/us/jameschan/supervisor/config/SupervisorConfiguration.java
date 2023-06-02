@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -54,24 +53,16 @@ public class SupervisorConfiguration implements WebMvcConfigurer {
         return dataSource;
     }
 
+    @Bean
+    public String serverDomain() {
+        return serverDomain;
+    }
+
     /**
      * Interceptors registration.
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SupervisorInterceptor());
-    }
-
-    /**
-     * Enable CORS (Cross-Origin Resource Sharing).
-     */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/supervisor/**")
-                .allowedOrigins("https://" + serverDomain)
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("Authorization", "Content-Type")
-                .allowCredentials(true)
-                .maxAge(3600);
     }
 }

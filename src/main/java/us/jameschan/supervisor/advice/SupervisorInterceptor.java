@@ -37,18 +37,21 @@ public class SupervisorInterceptor implements HandlerInterceptor {
 
         System.out.println(builder);
 
+        // Enable cors.
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) {
-        // This method is called after the controller method is executed, but before the response is sent back to the client
-        // You can modify the response or the model here
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception exception) {
-        // This method is called after the response has been sent back to the client
-        // You can perform some cleanup here
     }
 }
