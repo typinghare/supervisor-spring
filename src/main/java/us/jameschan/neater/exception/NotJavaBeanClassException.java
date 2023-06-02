@@ -12,6 +12,6 @@ public class NotJavaBeanClassException extends RuntimeException {
      * @param _class the class that is not a JavaBean
      */
     public NotJavaBeanClassException(Class<?> _class) {
-        super("This class is not a JavaBean: [ " + _class + " ].");
+        super("This class is not a Java bean: [ " + _class + " ].");
     }
 }

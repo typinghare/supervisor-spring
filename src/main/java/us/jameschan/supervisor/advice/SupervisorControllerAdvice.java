@@ -1,7 +1,6 @@
 package us.jameschan.supervisor.advice;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 import io.micrometer.common.lang.NonNullApi;
 import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,8 +30,6 @@ import static us.jameschan.neater.StaticFunctions.let;
 public class SupervisorControllerAdvice implements ResponseBodyAdvice<Object> {
     public static final Logger logger = LoggerFactory.getLogger(SupervisorControllerAdvice.class);
 
-    private final Gson gson = new Gson();
-
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<Map<String, Object>> handleBaseException(final BaseException baseException) {
         final Map<String, Object> body = ImmutableMap.<String, Object>builder()
@@ -40,9 +37,7 @@ public class SupervisorControllerAdvice implements ResponseBodyAdvice<Object> {
                 .put("errorCode", baseException.getErrorCode())
                 .build();
 
-        final HttpHeaders headers = let(new HttpHeaders(), it -> {
-            it.setContentType(MediaType.APPLICATION_JSON);
-        });
+        final HttpHeaders headers = let(new HttpHeaders(), it -> it.setContentType(MediaType.APPLICATION_JSON));
 
         return new ResponseEntity<>(body, headers, HttpStatus.FORBIDDEN);
     }

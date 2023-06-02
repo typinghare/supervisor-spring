@@ -38,7 +38,7 @@ public class StaticFunctions {
         try {
             return let(javaBeanClass.getDeclaredConstructor().newInstance(), consumer);
         } catch (Exception e) {
-            throw new NotJavaBeanClassException(javaBeanClass);
+            throw new RuntimeException(e);
         }
     }
 

@@ -10,11 +10,11 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Service;
 import us.jameschan.supervisor.constant.TaskAction;
 import us.jameschan.supervisor.constant.TaskStage;
-import us.jameschan.supervisor.dto.CategoryDto;
 import us.jameschan.supervisor.dto.TaskCommentDto;
 import us.jameschan.supervisor.dto.TaskDto;
 import us.jameschan.supervisor.exception.TaskException;
 import us.jameschan.supervisor.model.Category;
+import us.jameschan.supervisor.model.Subject;
 import us.jameschan.supervisor.model.Task;
 import us.jameschan.supervisor.model.TaskComment;
 import us.jameschan.supervisor.repository.TaskCommentRepository;
@@ -36,6 +36,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskCommentRepository taskCommentRepository;
     private final UserService userService;
+    private final SubjectService subjectService;
     private final CategoryService categoryService;
 
     @PersistenceContext
@@ -45,11 +46,13 @@ public class TaskService {
             TaskRepository taskRepository,
             TaskCommentRepository taskCommentRepository,
             UserService userService,
+            SubjectService subjectService,
             CategoryService categoryService
     ) {
         this.taskRepository = taskRepository;
         this.taskCommentRepository = taskCommentRepository;
         this.userService = userService;
+        this.subjectService = subjectService;
         this.categoryService = categoryService;
     }
 
@@ -71,10 +74,13 @@ public class TaskService {
             it.setResumedAt(Dates.toDateString(task.getResumedAt()));
             it.setEndedAt(Dates.toDateString(task.getEndedAt()));
 
-            // category
+            // Category
             final Category category = categoryService.getCategoryById(task.getCategoryId());
-            final CategoryDto categoryDto = categoryService.toCategoryDto(category);
-            it.setCategoryDto(categoryDto);
+            it.setCategoryName(category.getName());
+
+            // Subject
+            final Subject subject = subjectService.getSubjectById(category.getSubjectId());
+            it.setSubjectName(subject.getName());
         });
     }
 

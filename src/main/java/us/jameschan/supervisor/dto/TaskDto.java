@@ -14,7 +14,8 @@ public class TaskDto {
     private String startedAt;
     private String resumedAt;
     private String endedAt;
-    private CategoryDto categoryDto;
+    private String CategoryName;
+    private String subjectName;
 
     public Long getId() {
         return id;
@@ -96,11 +97,19 @@ public class TaskDto {
         this.endedAt = endedAt;
     }
 
-    public CategoryDto getCategoryDto() {
-        return categoryDto;
+    public String getCategoryName() {
+        return CategoryName;
     }
 
-    public void setCategoryDto(CategoryDto categoryDto) {
-        this.categoryDto = categoryDto;
+    public void setCategoryName(String categoryName) {
+        CategoryName = categoryName;
+    }
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
 }

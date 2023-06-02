@@ -2,9 +2,6 @@ package us.jameschan.supervisor.dto;
 
 import java.beans.JavaBean;
 
-/**
- * Task comment.
- */
 @JavaBean
 public class TaskCommentDto {
     private Long id;

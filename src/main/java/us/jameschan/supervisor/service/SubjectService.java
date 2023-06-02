@@ -40,7 +40,7 @@ public class SubjectService {
     /**
      * Retrieves a subject by its id.
      */
-    public Subject getSubject(Long subjectId) {
+    public Subject getSubjectById(Long subjectId) {
         return subjectRepository.findById(subjectId)
                 .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
     }
@@ -71,7 +71,7 @@ public class SubjectService {
      * Deletes a subject.
      */
     public void deleteSubject(Long subjectId) {
-        final Subject subject = getSubject(subjectId);
+        final Subject subject = getSubjectById(subjectId);
 
         userService.checkUserToBe(subject.getUserId());
         subjectRepository.deleteById(subjectId);
@@ -81,7 +81,7 @@ public class SubjectService {
      * Updates a subject.
      */
     public Subject updateSubject(Long subjectId, SubjectDto subjectDto) {
-        final Subject subject = getSubject(subjectId);
+        final Subject subject = getSubjectById(subjectId);
         final Long userId = userService.getUserIdByToken();
         if (!Objects.equals(userId, subject.getUserId())) {
             throw SubjectException.NO_PERMISSION_UPDATE_SUBJECT;

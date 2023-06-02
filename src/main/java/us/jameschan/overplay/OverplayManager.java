@@ -65,7 +65,9 @@ public class OverplayManager {
                     final BaseException baseException = constructor.newInstance();
 
                     // Inject OverplayManager.
-                    overplayManagerField.set(baseException, this);
+                    if (overplayManagerField != null) {
+                        overplayManagerField.set(baseException, this);
+                    }
 
                     // inject
                     field.set(null, baseException);
