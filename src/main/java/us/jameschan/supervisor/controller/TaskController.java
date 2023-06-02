@@ -14,7 +14,7 @@ import us.jameschan.supervisor.service.TaskService;
 import java.util.List;
 
 @Controller()
-@RequestMapping("tasks")
+@RequestMapping("/api/supervisor/tasks")
 public class TaskController {
     private final TaskService taskService;
 

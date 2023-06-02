@@ -16,7 +16,7 @@ import java.util.List;
 import static us.jameschan.neater.StaticFunctions.createBean;
 
 @Controller()
-@RequestMapping("users")
+@RequestMapping("/api/supervisor/users")
 public class UserController {
     private final UserService userService;
     private final SubjectService subjectService;

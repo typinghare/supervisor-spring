@@ -8,7 +8,7 @@ import us.jameschan.supervisor.dto.CategoryDto;
 import us.jameschan.supervisor.service.CategoryService;
 
 @Controller()
-@RequestMapping("categories")
+@RequestMapping("/api/supervisor/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 

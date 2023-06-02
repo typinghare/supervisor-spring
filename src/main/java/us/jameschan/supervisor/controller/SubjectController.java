@@ -11,7 +11,7 @@ import us.jameschan.supervisor.service.SubjectService;
 import java.util.List;
 
 @Controller()
-@RequestMapping("subjects")
+@RequestMapping("/api/supervisor/subjects")
 public class SubjectController {
     private final SubjectService subjectService;
 
