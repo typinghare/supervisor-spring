@@ -36,6 +36,9 @@ public class SupervisorConfiguration implements WebMvcConfigurer {
     @Value("${database.password}")
     private String databasePassword;
 
+    @Value("${server.domain}")
+    private String serverDomain;
+
     /**
      * JPA data source configuration.
      */
@@ -65,7 +68,7 @@ public class SupervisorConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/supervisor/**")
-                .allowedOrigins("*")
+                .allowedOrigins("https://" + serverDomain)
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("Authorization", "Content-Type")
                 .allowCredentials(true)
