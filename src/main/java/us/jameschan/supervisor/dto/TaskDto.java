@@ -14,8 +14,9 @@ public class TaskDto {
     private String startedAt;
     private String resumedAt;
     private String endedAt;
-    private String CategoryName;
     private String subjectName;
+    private String CategoryName;
+    private Integer expectedDuration;
 
     public Long getId() {
         return id;
@@ -97,6 +98,14 @@ public class TaskDto {
         this.endedAt = endedAt;
     }
 
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
     public String getCategoryName() {
         return CategoryName;
     }
@@ -105,11 +114,11 @@ public class TaskDto {
         CategoryName = categoryName;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public Integer getExpectedDuration() {
+        return expectedDuration;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setExpectedDuration(Integer expectedDuration) {
+        this.expectedDuration = expectedDuration;
     }
 }

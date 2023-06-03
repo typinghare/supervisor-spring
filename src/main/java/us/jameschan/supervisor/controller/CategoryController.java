@@ -22,7 +22,11 @@ public class CategoryController {
     @Message("Created a category successfully.")
     public CategoryDto createCategory(@RequestBody CategoryDto categoryDto) {
         return categoryService.toCategoryDto(
-                categoryService.createCategory(categoryDto.getSubjectId(), categoryDto.getName())
+            categoryService.createCategory(
+                categoryDto.getSubjectId(),
+                categoryDto.getName(),
+                categoryDto.getExpectedDuration()
+            )
         );
     }
 
@@ -30,8 +34,8 @@ public class CategoryController {
     @ResponseBody
     @Message("Updated a category successfully.")
     public CategoryDto updateCategory(
-            @PathVariable Long categoryId,
-            @RequestBody CategoryDto categoryDto
+        @PathVariable Long categoryId,
+        @RequestBody CategoryDto categoryDto
     ) {
         return categoryService.toCategoryDto(categoryService.updateCategory(categoryId, categoryDto));
     }

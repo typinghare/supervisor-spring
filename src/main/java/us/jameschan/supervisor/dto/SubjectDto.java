@@ -7,6 +7,7 @@ public class SubjectDto {
     private Long id;
     private Long userId;
     private String name;
+    private Integer expectedDuration;
 
     public Long getId() {
         return id;
@@ -30,5 +31,13 @@ public class SubjectDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getExpectedDuration() {
+        return expectedDuration;
+    }
+
+    public void setExpectedDuration(Integer expectedDuration) {
+        this.expectedDuration = expectedDuration;
     }
 }

@@ -7,8 +7,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import us.jameschan.supervisor.dto.UserDto;
 import us.jameschan.supervisor.dto.UserSignInDto;
-import us.jameschan.supervisor.dto.UserTokenDto;
 import us.jameschan.supervisor.dto.UserSignUpDto;
+import us.jameschan.supervisor.dto.UserTokenDto;
 import us.jameschan.supervisor.exception.UserException;
 import us.jameschan.supervisor.model.User;
 import us.jameschan.supervisor.repository.UserRepository;
@@ -61,7 +61,7 @@ public class UserService {
     public UserTokenDto signIn(UserSignInDto userSignInDto) {
         final String username = userSignInDto.getUsername();
         final User user = userRepository.findFirstByUsername(username)
-                .orElseThrow(() -> UserException.USER_NOT_FOUND);
+            .orElseThrow(() -> UserException.USER_NOT_FOUND);
 
         if (!encoder.matches(userSignInDto.getPassword(), user.getAuthString())) {
             throw UserException.INCORRECT_PASSWORD;
@@ -116,7 +116,7 @@ public class UserService {
      */
     public Long getUserIdByToken() {
         final HttpServletRequest request
-                = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         final String tokenString = request.getHeader("token");
 
         throwIfNull(tokenString, UserException.MISSING_TOKEN);

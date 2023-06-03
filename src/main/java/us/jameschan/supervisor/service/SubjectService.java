@@ -42,7 +42,7 @@ public class SubjectService {
      */
     public Subject getSubjectById(Long subjectId) {
         return subjectRepository.findById(subjectId)
-                .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
+            .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
     }
 
     /**

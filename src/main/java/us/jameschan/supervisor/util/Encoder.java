@@ -16,10 +16,10 @@ public class Encoder {
     @Autowired
     public Encoder(String encoderSecret, Integer encoderSaltLength, Integer encoderIterations) {
         passwordEncoder = new Pbkdf2PasswordEncoder(
-                encoderSecret,
-                encoderSaltLength,
-                encoderIterations,
-                Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
+            encoderSecret,
+            encoderSaltLength,
+            encoderIterations,
+            Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
         );
     }
 

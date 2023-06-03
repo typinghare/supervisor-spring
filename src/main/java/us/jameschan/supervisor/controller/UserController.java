@@ -62,20 +62,20 @@ public class UserController {
     @ResponseBody
     public List<SubjectDto> getSubjectsForUser(@PathVariable Long userId) {
         return subjectService.getSubjectsByUserId(userId).stream()
-                .map(subjectService::toSubjectDto).toList();
+            .map(subjectService::toSubjectDto).toList();
     }
 
     @GetMapping("/{userId}/tasks/")
     @ResponseBody
     @Message("Got all tasks successfully.")
     public List<TaskDto> getTasksForUser(
-            @PathVariable Long userId,
-            @RequestParam Long fromTimestamp,
-            @RequestParam Long toTimestamp,
-            @RequestParam(required = false) Integer limit,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Integer taskStage
+        @PathVariable Long userId,
+        @RequestParam Long fromTimestamp,
+        @RequestParam Long toTimestamp,
+        @RequestParam(required = false) Integer limit,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Long categoryId,
+        @RequestParam(required = false) Integer taskStage
     ) {
         final TaskDto taskDto = createBean(TaskDto.class, it -> {
             it.setCategoryId(categoryId);
@@ -90,6 +90,6 @@ public class UserController {
         final Pagination pagination = new Pagination(limit, page);
 
         return taskService.getTasks(taskDto, timestampRange, pagination)
-                .stream().map(taskService::toTaskDto).toList();
+            .stream().map(taskService::toTaskDto).toList();
     }
 }

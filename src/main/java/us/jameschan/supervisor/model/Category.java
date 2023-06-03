@@ -26,6 +26,10 @@ public class Category {
     @Comment("The name of this category.")
     private String name;
 
+    @Column(name = "expected_duration", nullable = false)
+    @Comment("The name of this category.")
+    private Integer expectedDuration;
+
     public Long getId() {
         return id;
     }
@@ -56,5 +60,13 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getExpectedDuration() {
+        return expectedDuration;
+    }
+
+    public void setExpectedDuration(Integer expectedDuration) {
+        this.expectedDuration = expectedDuration;
     }
 }

@@ -27,7 +27,7 @@ public class OverplayManager {
      * Mapping: base exception class => base exception info instance
      */
     private final Map<Class<? extends BaseException>, BaseExceptionInfo> baseExceptionClassMap
-            = new HashMap<>();
+        = new HashMap<>();
 
     @Autowired
     private OverplayManager(ApplicationContext applicationContext) {
@@ -37,7 +37,7 @@ public class OverplayManager {
     @SuppressWarnings("unchecked")
     public void init() {
         final Map<String, Object> exceptionConfigurationBeanMap
-                = applicationContext.getBeansWithAnnotation(OverplayException.class);
+            = applicationContext.getBeansWithAnnotation(OverplayException.class);
 
         for (final Object baseExceptionObject : exceptionConfigurationBeanMap.values()) {
             if (!(baseExceptionObject instanceof BaseException)) {
@@ -45,22 +45,22 @@ public class OverplayManager {
             }
 
             final OverplayException overplayException
-                    = baseExceptionObject.getClass().getAnnotation(OverplayException.class);
+                = baseExceptionObject.getClass().getAnnotation(OverplayException.class);
             final Class<? extends BaseException> baseExceptionClass
-                    = (Class<? extends BaseException>) baseExceptionObject.getClass();
+                = (Class<? extends BaseException>) baseExceptionObject.getClass();
             final BaseExceptionInfo baseExceptionInfo
-                    = new BaseExceptionInfo(overplayException.typeCode());
+                = new BaseExceptionInfo(overplayException.typeCode());
             baseExceptionClassMap.put(baseExceptionClass, baseExceptionInfo);
 
             // Utilizing Java reflection to read fields.
-            final Field overplayManagerField =getOverplayManagerField();
+            final Field overplayManagerField = getOverplayManagerField();
             for (final Field field : baseExceptionClass.getDeclaredFields()) {
                 final Entry entry = field.getAnnotation(Entry.class);
                 if (entry == null) continue;
 
                 try {
                     final Constructor<BaseException> constructor
-                            = (Constructor<BaseException>) baseExceptionClass.getDeclaredConstructor();
+                        = (Constructor<BaseException>) baseExceptionClass.getDeclaredConstructor();
                     constructor.setAccessible(true);
                     final BaseException baseException = constructor.newInstance();
 
@@ -74,17 +74,17 @@ public class OverplayManager {
 
                     // register
                     baseExceptionInfo.register(
-                            baseException,
-                            entry.code(),
-                            entry.status(),
-                            entry.message(),
-                            field.getName()
+                        baseException,
+                        entry.code(),
+                        entry.status(),
+                        entry.message(),
+                        field.getName()
                     );
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException(String.format(
-                            "Fail to create an instance of base exception class: <%s>",
-                            baseExceptionClass.getName()
+                        "Fail to create an instance of base exception class: <%s>",
+                        baseExceptionClass.getName()
                     ));
                 }
             }
@@ -159,6 +159,6 @@ public class OverplayManager {
      */
     public HttpStatus getHttpStatus(BaseException baseException) {
         return
-                getBaseExceptionInfo(baseException).getBaseExceptionEntry(baseException).httpStatus();
+            getBaseExceptionInfo(baseException).getBaseExceptionEntry(baseException).httpStatus();
     }
 }

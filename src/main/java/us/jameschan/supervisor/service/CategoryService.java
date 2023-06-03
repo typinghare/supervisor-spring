@@ -36,6 +36,7 @@ public class CategoryService {
             it.setId(category.getId());
             it.setName(category.getName());
             it.setSubjectId(category.getSubjectId());
+            it.setExpectedDuration(category.getExpectedDuration());
         });
     }
 
@@ -44,8 +45,8 @@ public class CategoryService {
      */
     public Category getCategoryById(Long categoryId) {
         return categoryRepository
-                .findById(categoryId)
-                .orElseThrow(() -> CategoryException.CATEGORY_NOT_FOUND);
+            .findById(categoryId)
+            .orElseThrow(() -> CategoryException.CATEGORY_NOT_FOUND);
     }
 
     /**
@@ -58,20 +59,21 @@ public class CategoryService {
     /**
      * Creates a category.
      */
-    public Category createCategory(Long subjectId, String categoryName) {
+    public Category createCategory(Long subjectId, String categoryName, Integer expectedDuration) {
         if (categoryRepository.findFirstBySubjectIdAndName(subjectId, categoryName).isPresent()) {
             throw CategoryException.CATEGORY_ALREADY_EXIST;
         }
 
         final Subject subject = subjectRepository
-                .findById(subjectId)
-                .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
+            .findById(subjectId)
+            .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
         userService.checkUserToBe(subject.getUserId());
 
         return categoryRepository.save(createBean(Category.class, it -> {
             it.setUserId(subject.getUserId());
             it.setSubjectId(subjectId);
             it.setName(categoryName);
+            it.setExpectedDuration(expectedDuration);
         }));
     }
 
@@ -83,8 +85,8 @@ public class CategoryService {
         final Category category = getCategoryById(categoryId);
 
         final Subject subject = subjectRepository
-                .findById(category.getSubjectId())
-                .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
+            .findById(category.getSubjectId())
+            .orElseThrow(() -> SubjectException.SUBJECT_NOT_FOUND);
         userService.checkUserToBe(subject.getUserId());
 
         categoryRepository.deleteById(categoryId);
@@ -97,7 +99,13 @@ public class CategoryService {
         final Category category = getCategoryById(categoryId);
         userService.checkUserToBe(category.getUserId());
 
-        category.setName(categoryDto.getName());
+        if (categoryDto.getName() != null) {
+            category.setName(categoryDto.getName());
+        }
+
+        if (category.getExpectedDuration() != null) {
+            category.setExpectedDuration(category.getExpectedDuration());
+        }
 
         return categoryRepository.save(category);
     }

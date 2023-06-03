@@ -33,8 +33,8 @@ public class SubjectController {
     @ResponseBody
     @Message("Updated the subject successfully.")
     public SubjectDto deleteSubject(
-            @PathVariable Long subjectId,
-            @RequestBody SubjectDto subjectDto
+        @PathVariable Long subjectId,
+        @RequestBody SubjectDto subjectDto
     ) {
         return subjectService.toSubjectDto(subjectService.updateSubject(subjectId, subjectDto));
     }
@@ -51,6 +51,6 @@ public class SubjectController {
     @Message("Got all categories successfully.")
     public List<CategoryDto> getCategoriesForSubject(@PathVariable Long subjectId) {
         return categoryService.findCategoriesBySubjectId(subjectId).stream()
-                .map(categoryService::toCategoryDto).toList();
+            .map(categoryService::toCategoryDto).toList();
     }
 }

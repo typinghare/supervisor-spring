@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author James Chan (TypingHare)
  */
 @SpringBootApplication(scanBasePackages = {
-        "us.jameschan.supervisor",
-        "us.jameschan.overplay",
+    "us.jameschan.supervisor",
+    "us.jameschan.overplay",
 })
 public class SupervisorApplication {
     public static void main(String[] args) {

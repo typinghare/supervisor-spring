@@ -43,11 +43,11 @@ public class TaskService {
     private EntityManager entityManager;
 
     public TaskService(
-            TaskRepository taskRepository,
-            TaskCommentRepository taskCommentRepository,
-            UserService userService,
-            SubjectService subjectService,
-            CategoryService categoryService
+        TaskRepository taskRepository,
+        TaskCommentRepository taskCommentRepository,
+        UserService userService,
+        SubjectService subjectService,
+        CategoryService categoryService
     ) {
         this.taskRepository = taskRepository;
         this.taskCommentRepository = taskCommentRepository;
@@ -77,6 +77,7 @@ public class TaskService {
             // Category
             final Category category = categoryService.getCategoryById(task.getCategoryId());
             it.setCategoryName(category.getName());
+            it.setExpectedDuration(category.getExpectedDuration());
 
             // Subject
             final Subject subject = subjectService.getSubjectById(category.getSubjectId());
@@ -188,7 +189,7 @@ public class TaskService {
             case PAUSE -> originalStage == TaskStage.ONGOING ? TaskStage.PAUSED : null;
             case RESUME -> originalStage == TaskStage.PAUSED ? TaskStage.ONGOING : null;
             case FINISH -> originalStage == TaskStage.ONGOING || originalStage == TaskStage.PAUSED
-                    ? TaskStage.ENDED : null;
+                ? TaskStage.ENDED : null;
             default -> null;
         };
     }

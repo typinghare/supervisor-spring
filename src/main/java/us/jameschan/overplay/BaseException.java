@@ -1,7 +1,6 @@
 package us.jameschan.overplay;
 
 import org.springframework.http.HttpStatus;
-import us.jameschan.overplay.OverplayManager;
 import us.jameschan.overplay.annotation.OverplayException;
 
 @OverplayException(typeCode = 0)
@@ -33,8 +32,8 @@ public class BaseException extends RuntimeException {
      */
     public String getErrorMessage() {
         return String.format("%s: %s",
-                overplayManager.getEntryName(this),
-                overplayManager.getMessage(this)
+            overplayManager.getEntryName(this),
+            overplayManager.getMessage(this)
         );
     }
 

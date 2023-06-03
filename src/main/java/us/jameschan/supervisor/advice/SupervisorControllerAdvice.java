@@ -33,9 +33,9 @@ public class SupervisorControllerAdvice implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<Map<String, Object>> handleBaseException(final BaseException baseException) {
         final Map<String, Object> body = ImmutableMap.<String, Object>builder()
-                .put("message", baseException.getMessage())
-                .put("errorCode", baseException.getErrorCode())
-                .build();
+            .put("message", baseException.getMessage())
+            .put("errorCode", baseException.getErrorCode())
+            .build();
 
         final HttpHeaders headers = let(new HttpHeaders(), it -> it.setContentType(MediaType.APPLICATION_JSON));
 
@@ -45,9 +45,9 @@ public class SupervisorControllerAdvice implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(final Exception exception) {
         final Map<String, Object> body = ImmutableMap.<String, Object>builder()
-                .put("message", "Unknown Server Error.")
-                .put("errorCode", "10000")
-                .build();
+            .put("message", "Unknown Server Error.")
+            .put("errorCode", "10000")
+            .build();
 
         logger.error(exception.getMessage());
         exception.printStackTrace();
@@ -70,12 +70,12 @@ public class SupervisorControllerAdvice implements ResponseBodyAdvice<Object> {
      */
     @Override
     public Object beforeBodyWrite(
-            @Nullable Object data,
-            MethodParameter returnType,
-            MediaType selectedContentType,
-            Class<? extends HttpMessageConverter<?>> selectedConverterType,
-            ServerHttpRequest request,
-            ServerHttpResponse response) {
+        @Nullable Object data,
+        MethodParameter returnType,
+        MediaType selectedContentType,
+        Class<? extends HttpMessageConverter<?>> selectedConverterType,
+        ServerHttpRequest request,
+        ServerHttpResponse response) {
         if (data instanceof Map<?, ?> && ((Map<?, ?>) data).containsKey("errorCode")) {
             return data;
         }

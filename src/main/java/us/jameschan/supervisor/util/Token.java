@@ -39,11 +39,11 @@ public class Token {
         claims.put("id", userId);
 
         return Jwts.builder()
-                .setIssuedAt(date)
-                .setExpiration(expiryDate)
-                .signWith(secretKey)
-                .setClaims(claims)
-                .compact();
+            .setIssuedAt(date)
+            .setExpiration(expiryDate)
+            .signWith(secretKey)
+            .setClaims(claims)
+            .compact();
     }
 
     /**
@@ -54,8 +54,8 @@ public class Token {
     public Long getUserId(String token) {
         try {
             final JwtParser parser = Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build();
+                .setSigningKey(secretKey)
+                .build();
 
             final Claims claims = parser.parseClaimsJws(token).getBody();
             return (long) ((double) claims.get("id"));
