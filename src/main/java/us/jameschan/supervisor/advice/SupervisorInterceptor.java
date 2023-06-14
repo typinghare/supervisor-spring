@@ -37,7 +37,7 @@ public class SupervisorInterceptor implements HandlerInterceptor {
 
         System.out.println(builder);
 
-        // Enable cors.
+        // Enable CORS (Cross-Origin Resource Sharing).
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -45,13 +45,5 @@ public class SupervisorInterceptor implements HandlerInterceptor {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
 
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) {
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception exception) {
     }
 }

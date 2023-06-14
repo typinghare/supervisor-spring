@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import us.jameschan.supervisor.annotation.Message;
+import us.jameschan.supervisor.constant.TaskStage;
 import us.jameschan.supervisor.dto.*;
 import us.jameschan.supervisor.service.SubjectService;
 import us.jameschan.supervisor.service.TaskService;
@@ -11,6 +12,7 @@ import us.jameschan.supervisor.service.UserService;
 import us.jameschan.supervisor.util.Pagination;
 import us.jameschan.supervisor.util.TimestampRange;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static us.jameschan.neater.StaticFunctions.createBean;
@@ -75,11 +77,10 @@ public class UserController {
         @RequestParam(required = false) Integer limit,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Long categoryId,
-        @RequestParam(required = false) Integer taskStage
+        @RequestParam(required = false) String taskStageString
     ) {
         final TaskDto taskDto = createBean(TaskDto.class, it -> {
             it.setCategoryId(categoryId);
-            it.setStage(taskStage);
             it.setUserId(userId);
         });
 
@@ -89,7 +90,19 @@ public class UserController {
         // Create pagination.
         final Pagination pagination = new Pagination(limit, page);
 
-        return taskService.getTasks(taskDto, timestampRange, pagination)
+        // Task stage list.
+        List<TaskStage> taskStageList = taskStageString == null ? null :
+            Arrays.stream(taskStageString.split(" ")).map(str -> {
+                try {
+                    final int number = Integer.parseInt(str);
+                    return TaskStage.fromNumber(number);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException();
+                }
+            }).toList();
+
+
+        return taskService.getTasks(taskDto, timestampRange, pagination, taskStageList)
             .stream().map(taskService::toTaskDto).toList();
     }
 }

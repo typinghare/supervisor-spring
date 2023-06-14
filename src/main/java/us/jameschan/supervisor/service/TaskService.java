@@ -43,11 +43,11 @@ public class TaskService {
     private EntityManager entityManager;
 
     public TaskService(
-        TaskRepository taskRepository,
-        TaskCommentRepository taskCommentRepository,
-        UserService userService,
-        SubjectService subjectService,
-        CategoryService categoryService
+            TaskRepository taskRepository,
+            TaskCommentRepository taskCommentRepository,
+            UserService userService,
+            SubjectService subjectService,
+            CategoryService categoryService
     ) {
         this.taskRepository = taskRepository;
         this.taskCommentRepository = taskCommentRepository;
@@ -130,6 +130,7 @@ public class TaskService {
 
     /**
      * Updates a task by createBeaning an action on it.
+     *
      * @param taskId the id of the task.
      * @param action the action to be applied on the task.
      * @return the task after createBeaning the action.
@@ -181,6 +182,7 @@ public class TaskService {
 
     /**
      * Changes the stage of a task by createBeaning the given action.
+     *
      * @return the new stage; null if it cannot finish.
      */
     public TaskStage changeStage(TaskStage originalStage, TaskAction taskAction) {
@@ -189,7 +191,7 @@ public class TaskService {
             case PAUSE -> originalStage == TaskStage.ONGOING ? TaskStage.PAUSED : null;
             case RESUME -> originalStage == TaskStage.PAUSED ? TaskStage.ONGOING : null;
             case FINISH -> originalStage == TaskStage.ONGOING || originalStage == TaskStage.PAUSED
-                ? TaskStage.ENDED : null;
+                    ? TaskStage.ENDED : null;
             default -> null;
         };
     }
@@ -197,7 +199,12 @@ public class TaskService {
     /**
      * Retrieves tasks.
      */
-    public List<Task> getTasks(TaskDto taskDto, TimestampRange timestampRange, Pagination pagination) {
+    public List<Task> getTasks(
+            TaskDto taskDto,
+            TimestampRange timestampRange,
+            Pagination pagination,
+            List<TaskStage> taskStageList
+    ) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Task> criteriaQuery = criteriaBuilder.createQuery(Task.class);
         final Root<Task> root = criteriaQuery.from(Task.class);
@@ -231,6 +238,12 @@ public class TaskService {
             predicateList.add(criteriaBuilder.lessThan(root.get("createdAt"), endTimestamp));
         }
 
+        // Specify task stage list.
+        if (taskStageList != null && taskStageList.size() > 0) {
+            final List<Integer> stageList = taskStageList.stream().map(TaskStage::getNumber).toList();
+            predicateList.add(criteriaBuilder.in(root.get("stage")).value(stageList));
+        }
+
         // Combine the conditions using 'and'
         criteriaQuery.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
 
@@ -238,7 +251,7 @@ public class TaskService {
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdAt")));
 
         // Create the TypedQuery
-        TypedQuery<Task> typedQuery = entityManager.createQuery(criteriaQuery);
+        final TypedQuery<Task> typedQuery = entityManager.createQuery(criteriaQuery);
 
         // Set pagination
         final Integer limit = pagination.limit();
