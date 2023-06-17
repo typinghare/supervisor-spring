@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import us.jameschan.supervisor.annotation.Message;
 import us.jameschan.supervisor.constant.TaskAction;
 import us.jameschan.supervisor.dto.TaskCommentDto;
+import us.jameschan.supervisor.dto.TaskCreateDto;
 import us.jameschan.supervisor.dto.TaskDto;
 import us.jameschan.supervisor.dto.TaskUpdateDto;
 import us.jameschan.supervisor.model.Task;
@@ -26,8 +27,8 @@ public class TaskController {
     @PostMapping("/")
     @ResponseBody
     @Message("Created the task successfully.")
-    public TaskDto createTask(@RequestParam Long categoryId) {
-        return taskService.toTaskDto(taskService.createTask(categoryId));
+    public TaskDto createTask(@RequestBody TaskCreateDto taskCreateDto) {
+        return taskService.toTaskDto(taskService.createTask(taskCreateDto.getCategoryId()));
     }
 
     @PutMapping("/{taskId}/")
