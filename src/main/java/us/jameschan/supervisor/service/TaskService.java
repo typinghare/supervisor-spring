@@ -73,6 +73,16 @@ public class TaskService {
             it.setResumedAt(Dates.toDateString(task.getResumedAt()));
             it.setEndedAt(Dates.toDateString(task.getEndedAt()));
 
+            // Duration modification.
+            if (task.getStage() == TaskStage.ONGOING.getNumber()) {
+                final Timestamp resumedAt = task.getResumedAt();
+                if (resumedAt != null) {
+                    final long differenceInMinutes
+                            = (System.currentTimeMillis() - resumedAt.getTime()) / 60000;
+                    it.setDuration(task.getDuration() + (int) differenceInMinutes);
+                }
+            }
+
             // Category
             final Category category = categoryService.getCategoryById(task.getCategoryId());
             it.setCategoryName(category.getName());
@@ -135,7 +145,9 @@ public class TaskService {
      * @return the task after createBeaning the action.
      */
     public Task updateTaskStage(Long taskId, TaskAction action) {
-        final Task task = taskRepository.findById(taskId).orElseThrow(() -> TaskException.TASK_NOT_FOUND);
+        final Task task = taskRepository
+                .findById(taskId)
+                .orElseThrow(() -> TaskException.TASK_NOT_FOUND);
         userService.checkUserToBe(task.getUserId());
 
         final TaskStage originalStage = TaskStage.fromNumber(task.getStage());
