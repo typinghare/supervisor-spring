@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Supervisor backend.
- *
  * @author James Chan (TypingHare)
  */
 @SpringBootApplication(scanBasePackages = {

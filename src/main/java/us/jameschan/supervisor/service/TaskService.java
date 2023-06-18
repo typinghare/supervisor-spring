@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import us.jameschan.supervisor.constant.TaskAction;
 import us.jameschan.supervisor.constant.TaskStage;
 import us.jameschan.supervisor.dto.TaskCommentDto;
@@ -27,6 +28,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static us.jameschan.neater.StaticFunctions.*;
 
@@ -143,11 +145,11 @@ public class TaskService {
 
     /**
      * Updates a task by createBeaning an action on it.
-     *
      * @param taskId the id of the task.
      * @param action the action to be applied on the task.
      * @return the task after createBeaning the action.
      */
+    @Transactional
     public Task updateTaskStage(Long taskId, TaskAction action) {
         final Task task = taskRepository
             .findById(taskId)
@@ -161,7 +163,7 @@ public class TaskService {
 
         final TaskStage newStage = changeStage(originalStage, action);
         if (newStage == null) {
-            throw TaskException.ILLEGAL_TASK_STAGE;
+            throw TaskException.ILLEGAL_TASK_ACTION;
         }
 
         // Update stage from the original stage to the new stage.
@@ -191,13 +193,17 @@ public class TaskService {
             }
         }
 
+        // Pause the ongoing task before saving the new one to the database.
+        if (action == TaskAction.START || action == TaskAction.RESUME) {
+            pauseOngoingTask(task.getUserId());
+        }
+
         // Persist the task to the database.
         return taskRepository.save(task);
     }
 
     /**
      * Changes the stage of a task by createBeaning the given action.
-     *
      * @return the new stage; null if it cannot finish.
      */
     public TaskStage changeStage(TaskStage originalStage, TaskAction taskAction) {
@@ -209,6 +215,26 @@ public class TaskService {
                 ? TaskStage.ENDED : null;
             default -> null;
         };
+    }
+
+    /**
+     * Pauses the ongoing task if exists.
+     * @param userId the user's id.
+     */
+    private void pauseOngoingTask(Long userId) {
+        final Optional<Task> optionalOngoingTask = taskRepository
+            .findFirstByUserIdAndStage(userId, TaskStage.ONGOING.getNumber());
+
+        if (optionalOngoingTask.isPresent()) {
+            final Task task = optionalOngoingTask.get();
+
+            throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
+            task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
+            task.setResumedAt(null);
+
+            task.setStage(TaskStage.PAUSED.getNumber());
+            taskRepository.save(task);
+        }
     }
 
     /**

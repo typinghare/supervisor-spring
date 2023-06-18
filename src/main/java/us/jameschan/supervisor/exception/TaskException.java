@@ -11,8 +11,10 @@ public class TaskException extends BaseException {
     public static TaskException TASK_NOT_FOUND;
     @Entry(code = 2, status = HttpStatus.BAD_REQUEST, message = "Illegal task stage is given.")
     public static TaskException ILLEGAL_TASK_STAGE;
-    @Entry(code = 3, status = HttpStatus.BAD_REQUEST, message = "The resumed time is null.")
+    @Entry(code = 3, status = HttpStatus.BAD_REQUEST, message = "The resumed time is null, but it should not be.")
     public static TaskException RESUMED_TIME_IS_NULL;
     @Entry(code = 4, status = HttpStatus.BAD_REQUEST, message = "The task comment does not exist.")
     public static TaskException TASK_COMMENT_NOT_FOUND;
+    @Entry(code = 5, status = HttpStatus.BAD_REQUEST, message = "Illegal task action is given.")
+    public static TaskException ILLEGAL_TASK_ACTION;
 }

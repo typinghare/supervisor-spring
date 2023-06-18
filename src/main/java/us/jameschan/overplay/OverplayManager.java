@@ -17,7 +17,6 @@ import java.util.Map;
 
 /**
  * Overplay manager.
- *
  * @author James Chan (TypingHare)
  */
 @Component
@@ -94,7 +93,6 @@ public class OverplayManager {
 
     /**
      * Returns base exception info.
-     *
      * @param baseException base exception instance.
      * @return base exception info.
      */
@@ -109,7 +107,6 @@ public class OverplayManager {
 
     /**
      * Returns overplay manager field.
-     *
      * @return overplay manager field.
      */
     private Field getOverplayManagerField() {
@@ -125,7 +122,6 @@ public class OverplayManager {
 
     /**
      * Returns the entry name of a specified base exception.
-     *
      * @param baseException base exception instance.
      * @return the entry name of the base exception.
      */
@@ -135,7 +131,6 @@ public class OverplayManager {
 
     /**
      * Returns the error code of a base exception.
-     *
      * @param baseException base exception instance.
      * @return the error code.
      */
@@ -150,7 +145,6 @@ public class OverplayManager {
 
     /**
      * Returns the error message.
-     *
      * @param baseException base exception instance.
      * @return the error message.
      */
@@ -160,7 +154,6 @@ public class OverplayManager {
 
     /**
      * Returns the HTTP status code.
-     *
      * @param baseException base exception instance.
      * @return the HTTP status code.
      */

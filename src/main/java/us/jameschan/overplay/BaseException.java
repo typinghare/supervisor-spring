@@ -12,7 +12,6 @@ public class BaseException extends RuntimeException {
 
     /**
      * Returns the error code of this exception.
-     *
      * @return the error code of this exception.
      */
     public String getErrorCode() {
@@ -21,7 +20,6 @@ public class BaseException extends RuntimeException {
 
     /**
      * Returns the HTTP status code of this exception.
-     *
      * @return the HTTP status code of this exception.
      */
     public HttpStatus getHttpStatus() {
@@ -30,7 +28,6 @@ public class BaseException extends RuntimeException {
 
     /**
      * Returns the error message of this exception.
-     *
      * @return the error message of this exception.
      */
     public String getErrorMessage() {

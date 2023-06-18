@@ -24,7 +24,6 @@ public class BaseExceptionInfo {
 
     /**
      * Returns the type code.
-     *
      * @return the type code.
      */
     public int getTypeCode() {
@@ -33,7 +32,6 @@ public class BaseExceptionInfo {
 
     /**
      * Register a base exception entry.
-     *
      * @param baseException base exception instance
      * @param entryCode     entry code
      * @param httpStatus    http status
@@ -53,7 +51,6 @@ public class BaseExceptionInfo {
 
     /**
      * Returns the base exception entry.
-     *
      * @param baseException base exception instance.
      * @return the base exception entry.
      */

@@ -9,7 +9,6 @@ import java.lang.annotation.*;
 public @interface Message {
     /**
      * Returns the message for a successful response.
-     *
      * @return the message for a successful response.
      */
     String value();

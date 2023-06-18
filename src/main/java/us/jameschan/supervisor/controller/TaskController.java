@@ -41,6 +41,7 @@ public class TaskController {
         final Integer taskAction = taskUpdateDto.getTaskAction();
         if (taskAction != null) {
             final Task task = taskService.updateTaskStage(taskId, TaskAction.fromNumber(taskAction));
+
             return taskService.toTaskDto(task);
         } else {
             return null;

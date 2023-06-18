@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 public class StaticFunctions {
     /**
      * Executes the specified consumer on the given object and returns the same object.
-     *
      * @param <T>      the type of the object
      * @param object   the object on which the consumer will be executed
      * @param consumer the consumer to be executed on the object
@@ -31,7 +30,6 @@ public class StaticFunctions {
     /**
      * Executes the specified consumer on a new instance of the given JavaBean class,
      * ensuring that the class is annotated with the JavaBean annotation.
-     *
      * @param <T>           the type of the JavaBean class.
      * @param javaBeanClass the JavaBean class on which the consumer will be executed.
      * @param consumer      the consumer to be executed on the JavaBean object.
@@ -55,7 +53,6 @@ public class StaticFunctions {
 
     /**
      * Throws a runtime exception if the given condition is true.
-     *
      * @param condition        a specified condition.
      * @param runtimeException a runtime exception to throw if the given condition is true.
      * @throws RuntimeException if the given condition is true.
@@ -68,7 +65,6 @@ public class StaticFunctions {
 
     /**
      * Throws a runtime exception if the given condition is false.
-     *
      * @param condition        a specified condition.
      * @param runtimeException a runtime exception to throw if the given condition is false.
      * @throws RuntimeException if the given condition is false.
@@ -81,7 +77,6 @@ public class StaticFunctions {
 
     /**
      * Throws a runtime exception if the given object is null.
-     *
      * @param object           a specified object to test.
      * @param runtimeException a runtime exception to throw if the given object is null.
      * @throws RuntimeException if the given object is null.
@@ -94,7 +89,6 @@ public class StaticFunctions {
 
     /**
      * Throws a runtime exception if the given object is null.
-     *
      * @param object           a specified object to test.
      * @param runtimeException a runtime exception to throw if the given object is null.
      * @throws RuntimeException if the given object is null.
