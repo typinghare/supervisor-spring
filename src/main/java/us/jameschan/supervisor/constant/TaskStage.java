@@ -26,6 +26,7 @@ public enum TaskStage {
 
     /**
      * Returns the corresponding TaskStage for a given number.
+     *
      * @param number the number corresponding to the TaskStage.
      * @return the TaskStage corresponding to the given number; null if no TaskStage matches.
      */
@@ -41,6 +42,7 @@ public enum TaskStage {
 
     /**
      * Returns the corresponding number of this task stage.
+     *
      * @return the corresponding number of this task stage.
      */
     public int getNumber() {

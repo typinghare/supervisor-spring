@@ -79,6 +79,7 @@ public class CategoryService {
 
     /**
      * Deletes a category.
+     *
      * @param categoryId the id of the category to delete.
      */
     public void deleteCategory(Long categoryId) {

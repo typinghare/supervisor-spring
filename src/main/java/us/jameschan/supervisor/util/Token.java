@@ -28,6 +28,7 @@ public class Token {
 
     /**
      * Generates and returns a token
+     *
      * @param userId the id of the user.
      * @return a token.
      */
@@ -48,6 +49,7 @@ public class Token {
 
     /**
      * Retrieves user's id from the given token string.
+     *
      * @param token token string.
      * @return user'id; null if the validation fails.
      */

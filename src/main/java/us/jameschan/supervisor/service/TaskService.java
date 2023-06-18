@@ -42,11 +42,11 @@ public class TaskService {
     private EntityManager entityManager;
 
     public TaskService(
-            TaskRepository taskRepository,
-            TaskCommentRepository taskCommentRepository,
-            UserService userService,
-            SubjectService subjectService,
-            CategoryService categoryService
+        TaskRepository taskRepository,
+        TaskCommentRepository taskCommentRepository,
+        UserService userService,
+        SubjectService subjectService,
+        CategoryService categoryService
     ) {
         this.taskRepository = taskRepository;
         this.taskCommentRepository = taskCommentRepository;
@@ -78,19 +78,23 @@ public class TaskService {
                 final Timestamp resumedAt = task.getResumedAt();
                 if (resumedAt != null) {
                     final long differenceInMinutes
-                            = (System.currentTimeMillis() - resumedAt.getTime()) / 60000;
+                        = (System.currentTimeMillis() - resumedAt.getTime()) / 60000;
                     it.setDuration(task.getDuration() + (int) differenceInMinutes);
                 }
             }
 
-            // Category
+            // Category.
             final Category category = categoryService.getCategoryById(task.getCategoryId());
             it.setCategoryName(category.getName());
             it.setExpectedDuration(category.getExpectedDuration());
 
-            // Subject
+            // Subject.
             final Subject subject = subjectService.getSubjectById(category.getSubjectId());
             it.setSubjectName(subject.getName());
+
+            // Task comments.
+            final List<TaskComment> taskCommentList = getAllTaskComment(task.getId());
+            it.setTaskCommentDtoList(taskCommentList.stream().map(this::toTaskCommentDto).toList());
         });
     }
 
@@ -146,8 +150,8 @@ public class TaskService {
      */
     public Task updateTaskStage(Long taskId, TaskAction action) {
         final Task task = taskRepository
-                .findById(taskId)
-                .orElseThrow(() -> TaskException.TASK_NOT_FOUND);
+            .findById(taskId)
+            .orElseThrow(() -> TaskException.TASK_NOT_FOUND);
         userService.checkUserToBe(task.getUserId());
 
         final TaskStage originalStage = TaskStage.fromNumber(task.getStage());
@@ -202,7 +206,7 @@ public class TaskService {
             case PAUSE -> originalStage == TaskStage.ONGOING ? TaskStage.PAUSED : null;
             case RESUME -> originalStage == TaskStage.PAUSED ? TaskStage.ONGOING : null;
             case FINISH -> originalStage == TaskStage.ONGOING || originalStage == TaskStage.PAUSED
-                    ? TaskStage.ENDED : null;
+                ? TaskStage.ENDED : null;
             default -> null;
         };
     }
@@ -211,10 +215,10 @@ public class TaskService {
      * Retrieves tasks.
      */
     public List<Task> getTasks(
-            TaskDto taskDto,
-            TimestampRange timestampRange,
-            Pagination pagination,
-            List<TaskStage> taskStageList
+        TaskDto taskDto,
+        TimestampRange timestampRange,
+        Pagination pagination,
+        List<TaskStage> taskStageList
     ) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Task> criteriaQuery = criteriaBuilder.createQuery(Task.class);
@@ -316,8 +320,8 @@ public class TaskService {
     public void deleteTaskComment(Long taskCommentId) {
         // Check that the task comment is pertained to the request user.
         final TaskComment taskComment = taskCommentRepository
-                .findById(taskCommentId)
-                .orElseThrow(() -> TaskException.TASK_COMMENT_NOT_FOUND);
+            .findById(taskCommentId)
+            .orElseThrow(() -> TaskException.TASK_COMMENT_NOT_FOUND);
         final Task task = getTaskById(taskComment.getTaskId());
         userService.checkUserToBe(task.getUserId());
 

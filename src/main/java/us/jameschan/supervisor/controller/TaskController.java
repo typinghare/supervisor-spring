@@ -35,8 +35,8 @@ public class TaskController {
     @ResponseBody
     @Message("updated the task successfully.")
     public TaskDto updateTask(
-            @PathVariable Long taskId,
-            @RequestBody TaskUpdateDto taskUpdateDto
+        @PathVariable Long taskId,
+        @RequestBody TaskUpdateDto taskUpdateDto
     ) {
         final Integer taskAction = taskUpdateDto.getTaskAction();
         if (taskAction != null) {
@@ -59,18 +59,18 @@ public class TaskController {
     @Message("Got all comments of the task successfully.")
     public List<TaskCommentDto> getAllCommentForTask(@PathVariable Long taskId) {
         return taskService.getAllTaskComment(taskId)
-                .stream().map(taskService::toTaskCommentDto).toList();
+            .stream().map(taskService::toTaskCommentDto).toList();
     }
 
     @PostMapping("/{taskId}/comments/")
     @ResponseBody
     @Message("Created a comment successfully.")
     public TaskCommentDto createComment(
-            @PathVariable Long taskId,
-            @RequestBody TaskCommentDto taskCommentDto
+        @PathVariable Long taskId,
+        @RequestBody TaskCommentDto taskCommentDto
     ) {
         return taskService.toTaskCommentDto(
-                taskService.createTaskComment(taskId, taskCommentDto.getContent())
+            taskService.createTaskComment(taskId, taskCommentDto.getContent())
         );
     }
 

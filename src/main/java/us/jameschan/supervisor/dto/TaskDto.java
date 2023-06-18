@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.dto;
 
 import java.beans.JavaBean;
+import java.util.List;
 
 @JavaBean
 public class TaskDto {
@@ -17,6 +18,7 @@ public class TaskDto {
     private String subjectName;
     private String CategoryName;
     private Integer expectedDuration;
+    private List<TaskCommentDto> taskCommentDtoList;
 
     public Long getId() {
         return id;
@@ -120,5 +122,13 @@ public class TaskDto {
 
     public void setExpectedDuration(Integer expectedDuration) {
         this.expectedDuration = expectedDuration;
+    }
+
+    public List<TaskCommentDto> getTaskCommentDtoList() {
+        return taskCommentDtoList;
+    }
+
+    public void setTaskCommentDtoList(List<TaskCommentDto> taskCommentDtoList) {
+        this.taskCommentDtoList = taskCommentDtoList;
     }
 }

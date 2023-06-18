@@ -2,6 +2,7 @@ package us.jameschan.supervisor.constant;
 
 /**
  * Enumerates the actions that can be performed on a task.
+ *
  * @author James Chan
  */
 public enum TaskAction {
@@ -38,6 +39,7 @@ public enum TaskAction {
 
     /**
      * Returns the corresponding number of this task action.
+     *
      * @return the corresponding number of this task action.
      */
     public int getNumber() {

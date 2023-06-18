@@ -55,6 +55,7 @@ public class UserService {
 
     /**
      * User signs in.
+     *
      * @throws UserException if user does not exist.
      * @throws UserException if the password is not correct.
      */
@@ -102,6 +103,7 @@ public class UserService {
 
     /**
      * Checks whether the id of the current user is the same as the given id.
+     *
      * @throws UserException if the id of the current user is different from the given id.
      */
     public void checkUserToBe(Long userId) {
@@ -112,6 +114,7 @@ public class UserService {
 
     /**
      * Returns the id of the user by token.
+     *
      * @throws UserException if token is missing or token is invalid.
      */
     public Long getUserIdByToken() {
@@ -129,6 +132,7 @@ public class UserService {
 
     /**
      * Returns authentication string.
+     *
      * @param rawPassword raw password to encode.
      * @return the authentication string.
      */

@@ -19,6 +19,7 @@ public @interface Entry {
 
     /**
      * Returns the request exception entry code.
+     *
      * @return the request exception entry code
      */
     @AliasFor("value")
@@ -26,12 +27,14 @@ public @interface Entry {
 
     /**
      * Returns http status.
+     *
      * @return http status.
      */
     HttpStatus status();
 
     /**
      * Returns the exception message.
+     *
      * @return the exception message.
      */
     String message() default "Unknown exception.";

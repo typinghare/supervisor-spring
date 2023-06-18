@@ -16,6 +16,7 @@ import java.lang.annotation.Target;
 public @interface OverplayException {
     /**
      * Returns the type code of the annotated exception class.
+     *
      * @return the type code of the annotated exception class.
      */
     int typeCode();

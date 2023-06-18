@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * A general encoder.
+ *
  * @author James Chan.
  */
 @Component
@@ -25,6 +26,7 @@ public class Encoder {
 
     /**
      * Encodes the raw password.
+     *
      * @return an encoded string
      */
     public final String encode(CharSequence rawPassword) {
@@ -33,6 +35,7 @@ public class Encoder {
 
     /**
      * Verifies the encoded password.
+     *
      * @return true if the password matches, false otherwise
      */
     public final boolean matches(CharSequence rawPassword, String encodedPassword) {
