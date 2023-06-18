@@ -28,8 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static us.jameschan.neater.StaticFunctions.createBean;
-import static us.jameschan.neater.StaticFunctions.throwIfNull;
+import static us.jameschan.neater.StaticFunctions.*;
 
 @Service
 public class TaskService {
@@ -284,6 +283,33 @@ public class TaskService {
      */
     public List<TaskComment> getAllTaskComment(Long taskId) {
         return taskCommentRepository.findAllByTaskId(taskId);
+    }
+
+    /**
+     * Creates a comment.
+     */
+    public TaskComment createTaskComment(Long taskId, String content) {
+        // Check that the task is pertained to the request user.
+        final Task task = getTaskById(taskId);
+        userService.checkUserToBe(task.getUserId());
+
+        final TaskComment taskComment = let(new TaskComment(), it -> {
+            it.setTaskId(taskId);
+            it.setContent(content);
+        });
+
+        return taskCommentRepository.save(taskComment);
+    }
+
+    public void deleteTaskComment(Long taskCommentId) {
+        // Check that the task comment is pertained to the request user.
+        final TaskComment taskComment = taskCommentRepository
+                .findById(taskCommentId)
+                .orElseThrow(() -> TaskException.TASK_COMMENT_NOT_FOUND);
+        final Task task = getTaskById(taskComment.getTaskId());
+        userService.checkUserToBe(task.getUserId());
+
+        taskCommentRepository.deleteById(taskCommentId);
     }
 
     /**
