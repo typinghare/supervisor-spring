@@ -37,3 +37,7 @@ out/
 .vscode/
 
 src/main/resources/.env.properties
+build
+
+# Ignore .DS_Store files in the root directory and its subdirectories
+**/.DS_Store

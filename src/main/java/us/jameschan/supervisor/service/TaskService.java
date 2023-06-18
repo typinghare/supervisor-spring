@@ -25,10 +25,7 @@ import us.jameschan.supervisor.util.Pagination;
 import us.jameschan.supervisor.util.TimestampRange;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static us.jameschan.neater.StaticFunctions.*;
 
@@ -195,7 +192,7 @@ public class TaskService {
 
         // Pause the ongoing task before saving the new one to the database.
         if (action == TaskAction.START || action == TaskAction.RESUME) {
-            pauseOngoingTask(task.getUserId());
+            pauseOngoingTask(task.getUserId(), task.getId());
         }
 
         // Persist the task to the database.
@@ -221,19 +218,21 @@ public class TaskService {
      * Pauses the ongoing task if exists.
      * @param userId the user's id.
      */
-    private void pauseOngoingTask(Long userId) {
+    private void pauseOngoingTask(Long userId, Long taskId) {
         final Optional<Task> optionalOngoingTask = taskRepository
             .findFirstByUserIdAndStage(userId, TaskStage.ONGOING.getNumber());
 
         if (optionalOngoingTask.isPresent()) {
             final Task task = optionalOngoingTask.get();
 
-            throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
-            task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
-            task.setResumedAt(null);
+            if (!Objects.equals(task.getId(), taskId)) {
+                throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
+                task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
+                task.setResumedAt(null);
 
-            task.setStage(TaskStage.PAUSED.getNumber());
-            taskRepository.save(task);
+                task.setStage(TaskStage.PAUSED.getNumber());
+                taskRepository.save(task);
+            }
         }
     }
 

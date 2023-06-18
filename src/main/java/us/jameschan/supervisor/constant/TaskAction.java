@@ -15,10 +15,7 @@ public enum TaskAction {
     RESUME(2),
 
     // Finishes a task, transitioning it to the ENDED stage.
-    FINISH(3),
-
-    // Removes a task, causing it to no longer appear in the task list.
-    REMOVE(4);
+    FINISH(3);
 
     private final int number;
 
