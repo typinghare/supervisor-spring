@@ -177,13 +177,13 @@ public class TaskService {
             }
             case PAUSED -> {
                 throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
-                task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
+                task.setDuration(task.getDuration() + getDifferenceInSeconds(task.getResumedAt()));
                 task.setResumedAt(null);
             }
             case ENDED -> {
                 if (originalStage == TaskStage.ONGOING) {
                     throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
-                    task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
+                    task.setDuration(task.getDuration() + getDifferenceInSeconds(task.getResumedAt()));
                 }
                 task.setResumedAt(null);
                 task.setEndedAt(timestamp);
@@ -210,7 +210,6 @@ public class TaskService {
             case RESUME -> originalStage == TaskStage.PAUSED ? TaskStage.ONGOING : null;
             case FINISH -> originalStage == TaskStage.ONGOING || originalStage == TaskStage.PAUSED
                 ? TaskStage.ENDED : null;
-            default -> null;
         };
     }
 
@@ -227,7 +226,7 @@ public class TaskService {
 
             if (!Objects.equals(task.getId(), taskId)) {
                 throwIfNull(task.getResumedAt(), TaskException.RESUMED_TIME_IS_NULL);
-                task.setDuration(task.getDuration() + getDifferenceInMinutes(task.getResumedAt()));
+                task.setDuration(task.getDuration() + getDifferenceInSeconds(task.getResumedAt()));
                 task.setResumedAt(null);
 
                 task.setStage(TaskStage.PAUSED.getNumber());
@@ -354,10 +353,10 @@ public class TaskService {
     }
 
     /**
-     * Returns the difference in minutes of the current timestamp and the given timestamp.
+     * Returns the difference in seconds of the current timestamp and the given timestamp.
      */
-    private int getDifferenceInMinutes(Timestamp timestamp) {
+    private int getDifferenceInSeconds(Timestamp timestamp) {
         final double differenceInSeconds = new Date().getTime() - timestamp.getTime();
-        return (int) Math.floor(differenceInSeconds / 60000);
+        return (int) Math.floor(differenceInSeconds / 1000);
     }
 }

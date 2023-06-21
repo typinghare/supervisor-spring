@@ -1,6 +1,7 @@
 package us.jameschan.supervisor.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,35 +18,45 @@ public class Task {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
+    @Comment("The id of the user to which this task belong.")
     private Long userId;
 
     @Column(name = "category_id", nullable = false)
+    @Comment("The id of the category to which this task belong.")
     private Long categoryId;
 
     @Column(name = "stage", nullable = false)
+    @Comment("The stage of this task.")
     private Integer stage;
 
     @Column(name = "duration", nullable = false)
+    @Comment("The duration in seconds.")
     private Integer duration;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
+    @Comment("The create time.")
     private Timestamp createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
+    @Comment("The update time. It is updated when the task starts.")
     private Timestamp updatedAt;
 
     @Column(name = "started_at")
+    @Comment("The start time.")
     private Timestamp startedAt;
 
     @Column(name = "resumed_at")
+    @Comment("The resume time. It is updated when the task starts.")
     private Timestamp resumedAt;
 
     @Column(name = "ended_at")
+    @Comment("The end time.")
     private Timestamp endedAt;
 
     @Column(name = "deleted_at")
+    @Comment("The delete time.")
     private Timestamp deletedAt;
 
     public Long getId() {
