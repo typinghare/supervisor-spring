@@ -77,7 +77,7 @@ public class TaskService {
                 final Timestamp resumedAt = task.getResumedAt();
                 if (resumedAt != null) {
                     final long differenceInMinutes
-                        = (System.currentTimeMillis() - resumedAt.getTime()) / 60000;
+                        = (System.currentTimeMillis() - resumedAt.getTime()) / 1000;
                     it.setDuration(task.getDuration() + (int) differenceInMinutes);
                 }
             }
