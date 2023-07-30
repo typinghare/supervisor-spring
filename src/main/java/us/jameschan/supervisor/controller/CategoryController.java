@@ -7,6 +7,8 @@ import us.jameschan.supervisor.annotation.Message;
 import us.jameschan.supervisor.dto.CategoryDto;
 import us.jameschan.supervisor.service.CategoryService;
 
+import java.util.List;
+
 @Controller()
 @RequestMapping("/api/supervisor/categories")
 public class CategoryController {
@@ -45,5 +47,12 @@ public class CategoryController {
     @Message("Deleted a category successfully.")
     public void deleteCategory(@PathVariable Long categoryId) {
         categoryService.deleteCategory(categoryId);
+    }
+
+    @GetMapping("/{categoryId}/historical-comments")
+    @ResponseBody
+    @Message("Got historical comments successfully.")
+    public List<String> getHistoricalComment(@PathVariable Long categoryId) {
+        return this.categoryService.getHistoricalComment(categoryId);
     }
 }

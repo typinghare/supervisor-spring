@@ -7,10 +7,17 @@ import us.jameschan.supervisor.exception.CategoryException;
 import us.jameschan.supervisor.exception.SubjectException;
 import us.jameschan.supervisor.model.Category;
 import us.jameschan.supervisor.model.Subject;
+import us.jameschan.supervisor.model.Task;
+import us.jameschan.supervisor.model.TaskComment;
 import us.jameschan.supervisor.repository.CategoryRepository;
 import us.jameschan.supervisor.repository.SubjectRepository;
+import us.jameschan.supervisor.repository.TaskCommentRepository;
+import us.jameschan.supervisor.repository.TaskRepository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static us.jameschan.neater.StaticFunctions.createBean;
 
@@ -19,13 +26,22 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final SubjectRepository subjectRepository;
     private final UserService userService;
+    private final TaskRepository taskRepository;
+    private final TaskCommentRepository taskCommentRepository;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository,
-                           SubjectRepository subjectRepository, UserService userService) {
+    public CategoryService(
+        CategoryRepository categoryRepository,
+        SubjectRepository subjectRepository,
+        UserService userService,
+        TaskRepository taskRepository,
+        TaskCommentRepository taskCommentRepository
+    ) {
         this.categoryRepository = categoryRepository;
         this.subjectRepository = subjectRepository;
         this.userService = userService;
+        this.taskRepository = taskRepository;
+        this.taskCommentRepository = taskCommentRepository;
     }
 
     /**
@@ -108,5 +124,24 @@ public class CategoryService {
         }
 
         return categoryRepository.save(category);
+    }
+
+    /**
+     * Gets all historical comments' content of a category.
+     * @param categoryId the id of the category
+     * @return a list of task comments' content
+     */
+    public List<String> getHistoricalComment(Long categoryId) {
+        final List<Task> taskList = taskRepository.findAllByCategoryId(categoryId);
+        final List<Long> taskIdList = taskList.stream().map(Task::getId).toList();
+        final Set<Long> taskIdSet = new HashSet<>(taskIdList);
+        final List<TaskComment> taskCommentList =
+            taskCommentRepository.findAllByTaskIdList(new ArrayList<>(taskIdSet));
+
+        // Extract comment content (distinct)
+        return taskCommentList.stream()
+            .map(TaskComment::getContent)
+            .distinct()
+            .toList();
     }
 }
