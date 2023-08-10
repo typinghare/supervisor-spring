@@ -1,5 +1,11 @@
 package us.jameschan.supervisor.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import us.jameschan.supervisor.dto.CategoryDto;
@@ -11,7 +17,6 @@ import us.jameschan.supervisor.model.Task;
 import us.jameschan.supervisor.model.TaskComment;
 import us.jameschan.supervisor.repository.CategoryRepository;
 import us.jameschan.supervisor.repository.SubjectRepository;
-import us.jameschan.supervisor.repository.TaskCommentRepository;
 import us.jameschan.supervisor.repository.TaskRepository;
 
 import java.util.ArrayList;
@@ -20,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import static us.jameschan.neater.StaticFunctions.createBean;
+import static us.jameschan.neater.StaticFunctions.let;
 
 @Service
 public class CategoryService {
@@ -27,7 +33,7 @@ public class CategoryService {
     private final SubjectRepository subjectRepository;
     private final UserService userService;
     private final TaskRepository taskRepository;
-    private final TaskCommentRepository taskCommentRepository;
+    private final EntityManager entityManager;
 
     @Autowired
     public CategoryService(
@@ -35,13 +41,12 @@ public class CategoryService {
         SubjectRepository subjectRepository,
         UserService userService,
         TaskRepository taskRepository,
-        TaskCommentRepository taskCommentRepository
-    ) {
+        EntityManager entityManager) {
         this.categoryRepository = categoryRepository;
         this.subjectRepository = subjectRepository;
         this.userService = userService;
         this.taskRepository = taskRepository;
-        this.taskCommentRepository = taskCommentRepository;
+        this.entityManager = entityManager;
     }
 
     /**
@@ -135,8 +140,22 @@ public class CategoryService {
         final List<Task> taskList = taskRepository.findAllByCategoryId(categoryId);
         final List<Long> taskIdList = taskList.stream().map(Task::getId).toList();
         final Set<Long> taskIdSet = new HashSet<>(taskIdList);
-        final List<TaskComment> taskCommentList =
-            taskCommentRepository.findAllByTaskIdList(new ArrayList<>(taskIdSet));
+
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<TaskComment> criteriaQuery = criteriaBuilder.createQuery(TaskComment.class);
+        final Root<TaskComment> root = criteriaQuery.from(TaskComment.class);
+        final List<Predicate> predicateList = let(new ArrayList<>(), it -> {
+            it.add(criteriaBuilder.isNull(root.get("deletedAt")));
+            it.add(criteriaBuilder.in(root.get("taskId")).value(taskIdSet));
+        });
+
+        criteriaQuery.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
+        criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
+
+        final TypedQuery<TaskComment> typedQuery = entityManager.createQuery(criteriaQuery);
+        typedQuery.setMaxResults(20);
+
+        final List<TaskComment> taskCommentList = typedQuery.getResultList();
 
         // Extract comment content (distinct)
         return taskCommentList.stream()

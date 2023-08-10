@@ -249,25 +249,25 @@ public class TaskService {
         final Root<Task> root = criteriaQuery.from(Task.class);
         final List<Predicate> predicateList = new ArrayList<>();
 
-        // Specify soft deleted.
+        // Specify soft deleted
         predicateList.add(criteriaBuilder.isNull(root.get("deletedAt")));
 
-        // Specify user.
+        // Specify user
         if (taskDto.getUserId() != null) {
             predicateList.add(criteriaBuilder.equal(root.get("userId"), taskDto.getUserId()));
         }
 
-        // Specify category.
+        // Specify category
         if (taskDto.getCategoryId() != null) {
             predicateList.add(criteriaBuilder.equal(root.get("category_id"), taskDto.getCategoryId()));
         }
 
-        // Specify stage.
+        // Specify stage
         if (taskDto.getStage() != null) {
             predicateList.add(criteriaBuilder.equal(root.get("stage"), taskDto.getStage()));
         }
 
-        // Specify time range.
+        // Specify time range
         final Timestamp startTimestamp = timestampRange.getStartTimestamp();
         final Timestamp endTimestamp = timestampRange.getEndTimestamp();
         if (startTimestamp != null) {
@@ -277,8 +277,8 @@ public class TaskService {
             predicateList.add(criteriaBuilder.lessThan(root.get("createdAt"), endTimestamp));
         }
 
-        // Specify task stage list.
-        if (taskStageList != null && taskStageList.size() > 0) {
+        // Specify task stage list
+        if (taskStageList != null && !taskStageList.isEmpty()) {
             final List<Integer> stageList = taskStageList.stream().map(TaskStage::getNumber).toList();
             predicateList.add(criteriaBuilder.in(root.get("stage")).value(stageList));
         }
@@ -286,7 +286,7 @@ public class TaskService {
         // Combine the conditions using 'and'
         criteriaQuery.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
 
-        // Set order.
+        // Set order
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("createdAt")));
 
         // Create the TypedQuery
