@@ -11,19 +11,17 @@ import java.util.List;
 @SpringBootTest(classes = {
     us.jameschan.supervisor.SupervisorApplication.class
 })
-public class ServiceTests {
+public class ServiceTest {
     private final CategoryService categoryService;
 
     @Autowired
-    public ServiceTests(CategoryService categoryService) {
+    public ServiceTest(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @Test
     void testFindCategory() {
         final List<Category> categoryList = categoryService.findCategoriesBySubjectId(1L);
-//        categoryList.forEach(category -> {
-//            System.out.println(category.getSubject());
-//        });
+        System.out.println(categoryList);
     }
 }

@@ -7,6 +7,8 @@ import java.util.List;
 public class TaskDto {
     private Long id;
     private Long userId;
+    private Long taskId;
+    private Long subjectId;
     private Long categoryId;
     private Integer stage;
     private Integer duration;
@@ -34,6 +36,22 @@ public class TaskDto {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
+    }
+
+    public Long getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(Long subjectId) {
+        this.subjectId = subjectId;
     }
 
     public Long getCategoryId() {

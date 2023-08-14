@@ -21,6 +21,10 @@ public class Task {
     @Comment("The id of the user to which this task belong.")
     private Long userId;
 
+    @Column(name = "subject_id", nullable = false)
+    @Comment("The id of the subject to which this task belong.")
+    private Long subjectId;
+
     @Column(name = "category_id", nullable = false)
     @Comment("The id of the category to which this task belong.")
     private Long categoryId;
@@ -73,6 +77,14 @@ public class Task {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(Long subjectId) {
+        this.subjectId = subjectId;
     }
 
     public Long getCategoryId() {

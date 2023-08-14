@@ -124,9 +124,13 @@ public class TaskService {
     public Task createTask(Long categoryId) {
         final Long userId = userService.getUserIdByToken();
 
+        // Retrieve category by the category id
+        final Category category = categoryService.getCategoryById(categoryId);
+
         final Timestamp timestamp = new Timestamp(new Date().getTime());
         final Task task = createBean(Task.class, it -> {
             it.setUserId(userId);
+            it.setSubjectId(category.getSubjectId());
             it.setCategoryId(categoryId);
             it.setStage(TaskStage.PENDING.getNumber());
             it.setDuration(0);
@@ -268,14 +272,7 @@ public class TaskService {
         }
 
         // Specify time range
-        final Timestamp startTimestamp = timestampRange.getStartTimestamp();
-        final Timestamp endTimestamp = timestampRange.getEndTimestamp();
-        if (startTimestamp != null) {
-            predicateList.add(criteriaBuilder.greaterThan(root.get("createdAt"), startTimestamp));
-        }
-        if (endTimestamp != null) {
-            predicateList.add(criteriaBuilder.lessThan(root.get("createdAt"), endTimestamp));
-        }
+        specifyTimeRange(timestampRange, criteriaBuilder, root, predicateList);
 
         // Specify task stage list
         if (taskStageList != null && !taskStageList.isEmpty()) {
@@ -352,11 +349,68 @@ public class TaskService {
         taskCommentRepository.deleteById(taskCommentId);
     }
 
+    public Integer getTotalDuration(TaskDto taskDto, TimestampRange timestampRange) {
+        final Long userId = userService.getUserIdByToken();
+
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<Task> criteriaQuery = criteriaBuilder.createQuery(Task.class);
+        final Root<Task> root = criteriaQuery.from(Task.class);
+        final List<Predicate> predicateList = let(new ArrayList<>(), it -> {
+            // Specify soft deleted
+            it.add(criteriaBuilder.isNull(root.get("deletedAt")));
+
+            // Specify user
+            it.add(criteriaBuilder.equal(root.get("userId"), userId));
+
+            // Specify time range
+            specifyTimeRange(timestampRange, criteriaBuilder, root, it);
+
+            // Specify subject id
+            it.add(criteriaBuilder.equal(root.get("subjectId"), taskDto.getSubjectId()));
+        });
+
+        criteriaQuery.where(criteriaBuilder.and(predicateList.toArray(new Predicate[0])));
+        final List<Task> taskList = entityManager.createQuery(criteriaQuery).getResultList();
+
+        return taskList.stream().map(Task::getDuration).reduce(0, Integer::sum);
+    }
+
     /**
      * Returns the difference in seconds of the current timestamp and the given timestamp.
      */
     private int getDifferenceInSeconds(Timestamp timestamp) {
         final double differenceInSeconds = new Date().getTime() - timestamp.getTime();
         return (int) Math.floor(differenceInSeconds / 1000);
+    }
+
+    private <X> void specifyTimeRange(
+        TimestampRange timestampRange,
+        CriteriaBuilder criteriaBuilder,
+        Root<X> root,
+        List<Predicate> predicateList
+    ) {
+        final Timestamp startTimestamp = timestampRange.getStartTimestamp();
+        final Timestamp endTimestamp = timestampRange.getEndTimestamp();
+        if (startTimestamp != null) {
+            predicateList.add(criteriaBuilder.greaterThan(root.get("createdAt"), startTimestamp));
+        }
+        if (endTimestamp != null) {
+            predicateList.add(criteriaBuilder.lessThan(root.get("createdAt"), endTimestamp));
+        }
+    }
+
+    public void loadSubjectId() {
+        final List<Task> taskList = taskRepository.findAll();
+
+        for (final Task task : taskList) {
+            if (task.getSubjectId() != null) continue;
+
+            final Long categoryId = task.getCategoryId();
+            final Category category = categoryService.getCategoryById(categoryId);
+
+            // Update the task
+            task.setSubjectId(category.getSubjectId());
+            taskRepository.save(task);
+        }
     }
 }

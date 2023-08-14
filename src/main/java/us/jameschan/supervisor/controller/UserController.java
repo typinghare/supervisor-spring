@@ -105,4 +105,24 @@ public class UserController {
         return taskService.getTasks(taskDto, timestampRange, pagination, taskStageList)
             .stream().map(taskService::toTaskDto).toList();
     }
+
+    @GetMapping("/{userId}/durations/")
+    @ResponseBody
+    @Message("Got the duration successfully.")
+    public Integer getTotalDuration(
+        @PathVariable Long userId,
+        @RequestParam Long fromTimestamp,
+        @RequestParam Long toTimestamp,
+        @RequestParam(required = false) Long subjectId
+    ) {
+        final TaskDto taskDto = createBean(TaskDto.class, it -> {
+            it.setSubjectId(subjectId);
+            it.setUserId(userId);
+        });
+
+        // Create timestamp range.
+        final TimestampRange timestampRange = new TimestampRange(fromTimestamp, toTimestamp);
+
+        return taskService.getTotalDuration(taskDto, timestampRange);
+    }
 }
