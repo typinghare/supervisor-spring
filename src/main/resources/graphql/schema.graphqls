@@ -1,0 +1,32 @@
+type Query {
+    # Retrieve a user by their ID.
+    userById(id: ID): User
+
+    # Retrieve a user by their username.
+    userByUsername(username: String): User
+
+    # Retrieve a user by their email address.
+    userByEmail(email: String): User
+}
+
+type Mutation {
+    createUser(username: String!, email: String!, password: String!): User
+    signIn(username: String!, password: String!): User
+}
+
+type User {
+    id: ID
+    username: String!
+    email: String!
+    project: [Project!]!
+}
+
+type Project {
+    id: ID,
+    userId: ID!,
+    name: String!,
+    created_at: Int,
+    started_at: Int,
+    ended_at: Int
+    archived_at: Int
+}
