@@ -30,4 +30,12 @@ public class UserController {
     ) {
         return userService.createUser(username, email, password);
     }
+
+    @QueryMapping
+    public User signIn(
+        @Argument final String username,
+        @Argument final String password
+    ) {
+        return userService.signIn(username, password);
+    }
 }

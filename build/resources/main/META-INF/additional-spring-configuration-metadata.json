@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "hibernate.driver",
+      "type": "java.lang.String",
+      "description": "The dialect for Hibernate."
+    },
+    {
+      "name": "hibernate.dialect",
+      "type": "java.lang.String",
+      "description": "The dialect for Hibernate."
+    },
+    {
+      "name": "server.domain",
+      "type": "java.lang.String",
+      "description": "The domain of the server."
+    }
+  ]
+}

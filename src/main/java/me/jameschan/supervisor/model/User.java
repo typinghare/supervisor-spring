@@ -22,7 +22,7 @@ public class User {
     @Comment("The username.")
     private String username;
 
-    @Column(name = "auth_string", nullable = false, length = 80)
+    @Column(name = "auth_string", nullable = false, length = 128)
     @Comment("The authentication string.")
     private String authString;
 

@@ -1,32 +1,14 @@
 package me.jameschan.supervisor.exception;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.graphql.execution.ErrorType;
 
-public class ResourceException extends RuntimeException {
-    private final Integer errorCode;
-    private final HttpStatus httpStatus;
-    private final String message;
-
+// errorCode = 10000 ~ 19999
+public class ResourceException extends ServiceException {
     public ResourceException(
         final Integer errorCode,
-        final HttpStatus httpStatus,
+        final ErrorType errorType,
         final String message
     ) {
-        this.errorCode = errorCode;
-        this.httpStatus = httpStatus;
-        this.message = message;
-    }
-
-    public Integer getErrorCode() {
-        return errorCode;
-    }
-
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
+        super(errorCode, errorType, message);
     }
 }
