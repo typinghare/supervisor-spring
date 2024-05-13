@@ -86,11 +86,14 @@ public class UserService {
         return sessionId;
     }
 
-    public User getUserBySessionId(final String sessionId) {
-        final var userSession = userSessionRepository
+    public UserSession getUserSession(final String sessionId) {
+        return userSessionRepository
             .findById(sessionId)
             .orElseThrow(() -> ValidationException.USER_SESSION);
+    }
 
+    public User getUserBySessionId(final String sessionId) {
+        final var userSession = getUserSession(sessionId);
         return getUserById(userSession.getUserId());
     }
 

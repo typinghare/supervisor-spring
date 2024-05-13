@@ -63,9 +63,17 @@ final boolean isPasswordMatched = encryptor.matches(password, authString);
 
 ## Session and Cookies
 
-### Set Cookies for Client Ends
+### Manipulate Cookies
 
+In `common.Cookies`, there's an inner class `Key` housing all cookie keys alongside `set` and `delete` methods. These methods manage "Set-Cookie" headers in the response, a crucial aspect for developers to handle.
 
+The cookie module's implementation utilizes an interceptor, which is intricately structured within the Spring Boot GraphQL framework. `interceptor.CookieInterceptor` implements `WebGraphQlInterceptor` and overrides the intercept method, invoked after the successful execution of the controller method. In the intercept method, cookies are retrieved from the context, if available, and each cookie is then added to the headers.
+
+With this interceptor in place, the `set` and `delete` methods within `common.Cookies` essentially involve adding or removing the cookie from the cookie list within the context.
+
+## User session
+
+Upon successful validation during sign-in, users receive a session ID cookie. This session ID, along with the user ID and additional information, is encapsulated as a `redis.UserSession` object and stored in Redis. Developers can retrieve as user session by a session ID using `getUserSession` method in `service.UserService`.
 
 ## v2
 
