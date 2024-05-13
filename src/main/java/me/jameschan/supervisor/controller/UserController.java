@@ -1,5 +1,8 @@
 package me.jameschan.supervisor.controller;
 
+import graphql.GraphQLContext;
+import jakarta.servlet.http.Cookie;
+import me.jameschan.supervisor.common.Cookies;
 import me.jameschan.supervisor.model.User;
 import me.jameschan.supervisor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +35,23 @@ public class UserController {
     }
 
     @QueryMapping
+    public User userBySessionId(@Argument final String sessionId) {
+        return userService.getUserBySessionId(sessionId);
+    }
+
+    @QueryMapping
     public User signIn(
         @Argument final String username,
-        @Argument final String password
+        @Argument final String password,
+        GraphQLContext context
     ) {
-        return userService.signIn(username, password);
+        final var user = userService.signIn(username, password);
+        final var sessionId = userService.createUserSession(user.getId());
+        final var sessionIdCookie = new Cookie(Cookies.Key.SESSION_ID, sessionId);
+        final var userIdCookie = new Cookie(Cookies.Key.USER_ID, user.getId().toString());
+        Cookies.set(sessionIdCookie, context);
+        Cookies.set(userIdCookie, context);
+
+        return user;
     }
 }

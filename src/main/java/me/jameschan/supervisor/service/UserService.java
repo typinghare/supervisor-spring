@@ -4,24 +4,30 @@ import me.jameschan.supervisor.exception.ResourceInUseException;
 import me.jameschan.supervisor.exception.ResourceNotFoundException;
 import me.jameschan.supervisor.exception.ValidationException;
 import me.jameschan.supervisor.model.User;
+import me.jameschan.supervisor.redis.UserSession;
+import me.jameschan.supervisor.redis.UserSessionRepository;
 import me.jameschan.supervisor.repository.UserRepository;
 import me.jameschan.supervisor.utility.Encryptor;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
+    private final UserSessionRepository userSessionRepository;
     private final Encryptor encryptor;
 
     @Autowired
     public UserService(
         final UserRepository userRepository,
+        final UserSessionRepository userSessionRepository,
         final Encryptor encryptor
     ) {
         this.userRepository = userRepository;
+        this.userSessionRepository = userSessionRepository;
         this.encryptor = encryptor;
     }
 
@@ -68,6 +74,24 @@ public class UserService {
         return isEmailAddress ?
             signInWithEmail(username, password) :
             signInWithUsername(username, password);
+    }
+
+    public String createUserSession(final Long userId) {
+        final var sessionId = UUID.randomUUID().toString();
+        final var userSession = new UserSession();
+        userSession.setId(sessionId);
+        userSession.setUserId(userId);
+        userSessionRepository.save(userSession);
+
+        return sessionId;
+    }
+
+    public User getUserBySessionId(final String sessionId) {
+        final var userSession = userSessionRepository
+            .findById(sessionId)
+            .orElseThrow(() -> ValidationException.USER_SESSION);
+
+        return getUserById(userSession.getUserId());
     }
 
     private User signInWithUsername(final String username, final String password) {

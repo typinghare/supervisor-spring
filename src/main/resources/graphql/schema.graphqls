@@ -1,6 +1,9 @@
 type Query {
     # Retrieve a user by their ID.
-    userById(id: ID): User
+    userById(id: ID!): User
+
+    # Get user by session id
+    userBySessionId(sessionId: String!): User
 
     # User sign in
     signIn(username: String!, password: String!): User

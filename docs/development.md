@@ -1,5 +1,23 @@
 # Development
 
+## Gradle and Dependencies
+
+This project utilizes [Gradle]((https://docs.gradle.org/current/userguide/userguide.html)) as its package manager. For detailed insights into plugins, dependencies, tasks, and related aspects, please refer to the build.gradle file. Ensure that Gradle version 8.7 or higher is installed for compatibility.
+
+This dependency list is as follows:
+
+* Spring
+    * [Spring Boot 3](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
+    * [Spring Security Crypto](https://docs.spring.io/spring-security/site/docs/5.0.x/reference/html/crypto.html)
+    * [Spring Data JPA](https://docs.spring.io/spring-data/jpa/reference/index.html)
+* Database and NoSQL
+    * [MySQL Java Connector](https://www.mysql.com/products/connector/)
+* API
+    * [Spring Boot GraphQL](https://docs.spring.io/spring-graphql/docs/1.2.2/reference/html/)
+* Utility
+    * [Guava](https://github.com/google/guava/wiki)
+    * [Apache Commons Validator](https://commons.apache.org/proper/commons-validator/)
+
 ## API and GraphQL
 
 This project employs GraphQL as its API protocol. Developers are encouraged to adhere to GraphQL best practices and the provided specifications. For those unfamiliar with GraphQL, we recommend referring to the (GraphQL documentation)[https://graphql.org/learn/] to begin familiarizing themselves with its concepts and usage.
@@ -25,8 +43,29 @@ The custom exception resolver, `aop.SupervisorExceptionResolver`, governs the fo
 }
 ```
 
-
 ## Authentication
+
+For enhanced security, it is imperative that all passwords and passcodes are encrypted using `utility.Encryptor`. This utility offers both encryption and matching methods, ensuring robust protection. Powered by the PBKDF2 algorithm within the Spring Security Crypto library, it guarantees strong cryptographic standards.
+
+The `Encryptor` component is integrated within `SupervisorConfiguration`, ensuring effortless usage:
+
+```java
+private final Encryptor encryptor;
+
+final String password = "a password";
+
+// Encrypt the password to generate an authentication string
+final String authString = encryptor.encrypt(password);
+
+// Verify if the provided password matches the authentication string
+final boolean isPasswordMatched = encryptor.matches(password, authString);
+```
+
+## Session and Cookies
+
+### Set Cookies for Client Ends
+
+
 
 ## v2
 

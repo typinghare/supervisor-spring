@@ -1,9 +1,8 @@
-package me.jameschan.supervisor.aop;
+package me.jameschan.supervisor.exception;
 
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
-import me.jameschan.supervisor.exception.ResourceException;
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.lang.NonNull;
