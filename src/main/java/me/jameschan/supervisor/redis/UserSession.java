@@ -7,7 +7,7 @@ import java.beans.JavaBean;
 
 @RedisHash("UserSession")
 @JavaBean
-public class UserSession {
+public final class UserSession {
     @Id
     private String id;
     private Long userId;

@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "timeframe")
 @JavaBean
-public class Timeframe {
+public final class Timeframe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

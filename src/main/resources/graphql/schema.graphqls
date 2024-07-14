@@ -23,11 +23,21 @@ type User {
 }
 
 type Project {
-    id: ID,
-    userId: ID!,
-    name: String!,
-    created_at: Int,
-    started_at: Int,
-    ended_at: Int
-    archived_at: Int
+    id: ID!
+    userId: ID!
+    name: String!
+    created_at: Int!
+    started_at: Int
+    stopped_at: Int
+}
+
+type Entry {
+    id: ID!
+    user_id: ID!
+    project_id: ID!
+    description: String!
+    started_at: Int
+    stopped_at: Int
+    duration: Int
+    project: Project
 }

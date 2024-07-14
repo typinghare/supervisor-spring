@@ -1,7 +1,6 @@
 package me.jameschan.supervisor.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Comment;
 
 import java.beans.JavaBean;
 import java.sql.Timestamp;
@@ -9,31 +8,35 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "project")
 @JavaBean
-public class Project {
+public final class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    @Comment("The id of the user to which this subject belong.")
+    @Column(
+        name = "user_id",
+        nullable = false
+//        comment = "The id of the user to which this subject belong."
+    )
     private Long userId;
 
-    @Column(name = "name", nullable = false, length = 32)
-    @Comment("The name of this subject.")
+    @Column(
+        name = "name",
+        nullable = false,
+        length = 32
+//        comment = "The name of this subject."
+    )
     private String name;
 
     @Column(name = "created_at")
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
     @Column(name = "started_at")
-    private Timestamp started_at;
+    private Timestamp startedAt;
 
-    @Column(name = "ended_at")
-    private Timestamp ended_at;
-
-    @Column(name = "archived_at")
-    private Timestamp archived_at;
+    @Column(name = "stopped_at")
+    private Timestamp stoppedAt;
 
     public Long getId() {
         return id;
@@ -59,35 +62,27 @@ public class Project {
         this.name = name;
     }
 
-    public Timestamp getCreated_at() {
-        return created_at;
+    public Timestamp getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Timestamp created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Timestamp getStarted_at() {
-        return started_at;
+    public Timestamp getStartedAt() {
+        return startedAt;
     }
 
-    public void setStarted_at(Timestamp started_at) {
-        this.started_at = started_at;
+    public void setStartedAt(Timestamp startedAt) {
+        this.startedAt = startedAt;
     }
 
-    public Timestamp getEnded_at() {
-        return ended_at;
+    public Timestamp getStoppedAt() {
+        return stoppedAt;
     }
 
-    public void setEnded_at(Timestamp ended_at) {
-        this.ended_at = ended_at;
-    }
-
-    public Timestamp getArchived_at() {
-        return archived_at;
-    }
-
-    public void setArchived_at(Timestamp archived_at) {
-        this.archived_at = archived_at;
+    public void setStoppedAt(Timestamp stoppedAt) {
+        this.stoppedAt = stoppedAt;
     }
 }

@@ -8,7 +8,7 @@ import java.beans.JavaBean;
 @Entity
 @Table(name = "user")
 @JavaBean
-public class User {
+public final class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
