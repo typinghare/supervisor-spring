@@ -1,9 +1,11 @@
 plugins {
     id 'java'
     id 'war'
-    id 'org.springframework.boot' version '3.2.5'
-    id 'io.spring.dependency-management' version '1.1.0'
-    id 'com.github.ben-manes.versions' version '0.39.0'
+    id 'org.springframework.boot' version '3.3.1'
+
+    // Used to update dependencies
+    // Usage: gradle dependencyUpdates
+    id 'com.github.ben-manes.versions' version '0.51.0'
 }
 
 group = 'us.jameschan'
@@ -15,23 +17,26 @@ repositories {
 
 dependencies {
     // Spring
-    implementation 'org.springframework.boot:spring-boot-starter-web:3.2.5'
-    implementation 'org.springframework.security:spring-security-crypto:6.0.3'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.5'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.3.1'
+    implementation 'org.springframework.security:spring-security-crypto:6.3.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.1'
 
     // Database, ORM, and NoSQL
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.5'
-    implementation 'com.mysql:mysql-connector-j:8.2.0'
-    implementation 'org.hibernate.orm:hibernate-core:6.2.1.Final'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.2.5'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.3.1'
+    implementation 'com.mysql:mysql-connector-j:9.0.0'
+    implementation("org.hibernate.orm:hibernate-core:7.0.0.Alpha3")
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.3.1'
 
     // Api, GraphQL
-    implementation 'org.springframework.boot:spring-boot-starter-graphql:3.2.5'
-    testImplementation 'org.springframework.graphql:spring-graphql-test:3.2.5'
+    implementation 'org.springframework.boot:spring-boot-starter-graphql:3.3.1'
+    testImplementation("org.springframework.graphql:spring-graphql-test:1.3.1")
 
     // Utilities
-    implementation 'com.google.guava:guava:33.2.0-jre'
-    implementation 'commons-validator:commons-validator:1.8.0'
+    implementation 'com.google.guava:guava:33.2.1-jre'
+    implementation("com.sun.mail:jakarta.mail:2.0.1")
+
+    // Annotation
+    implementation("org.jetbrains:annotations:24.1.0")
 }
 
 tasks.named('compileJava') {

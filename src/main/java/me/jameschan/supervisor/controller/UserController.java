@@ -12,7 +12,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class UserController {
+public final class UserController {
     private final UserService userService;
 
     @Autowired
@@ -29,8 +29,7 @@ public class UserController {
     public User createUser(
         @Argument final String username,
         @Argument final String email,
-        @Argument final String password
-    ) {
+        @Argument final String password) {
         return userService.createUser(username, email, password);
     }
 
@@ -41,10 +40,7 @@ public class UserController {
 
     @QueryMapping
     public User signIn(
-        @Argument final String username,
-        @Argument final String password,
-        GraphQLContext context
-    ) {
+        @Argument final String username, @Argument final String password, GraphQLContext context) {
         final var user = userService.signIn(username, password);
         final var sessionId = userService.createUserSession(user.getId());
         final var sessionIdCookie = new Cookie(Cookies.Key.SESSION_ID, sessionId);

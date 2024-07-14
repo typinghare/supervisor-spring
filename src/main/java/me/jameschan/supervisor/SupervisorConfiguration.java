@@ -1,17 +1,11 @@
 package me.jameschan.supervisor;
 
-import graphql.GraphQLContext;
-import jakarta.servlet.http.Cookie;
-import me.jameschan.supervisor.common.ContextKey;
 import me.jameschan.supervisor.utility.Encryptor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
 
 @Configuration
 @PropertySource({
@@ -30,7 +24,7 @@ public class SupervisorConfiguration {
     private Integer encryptorIterations;
 
     @Bean
-    public Encryptor encryptor() {
+    public @NotNull Encryptor encryptor() {
         return new Encryptor(encryptorSecret, encryptorSaltLength, encryptorIterations);
     }
 }

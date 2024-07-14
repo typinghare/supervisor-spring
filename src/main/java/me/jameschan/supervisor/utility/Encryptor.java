@@ -1,13 +1,13 @@
 package me.jameschan.supervisor.utility;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 /**
  * Utility class for encrypting and verifying passwords using PBKDF2 algorithm.
  */
-public class Encryptor {
-
+public final class Encryptor {
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -17,13 +17,17 @@ public class Encryptor {
      * @param saltLength the length of the salt
      * @param iterations the number of iterations for key derivation
      */
-    public Encryptor(final String secret, final Integer saltLength, final Integer iterations) {
-        passwordEncoder = new Pbkdf2PasswordEncoder(
-            secret,
-            saltLength,
-            iterations,
-            Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256
-        );
+    public Encryptor(
+        @NotNull final String secret,
+        @NotNull final Integer saltLength,
+        @NotNull final Integer iterations
+    ) {
+        passwordEncoder =
+            new Pbkdf2PasswordEncoder(
+                secret,
+                saltLength,
+                iterations,
+                Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
     }
 
     /**
@@ -31,7 +35,7 @@ public class Encryptor {
      * @param rawString the raw string to be encrypted
      * @return the encrypted string
      */
-    public final String encrypt(final CharSequence rawString) {
+    public String encrypt(@NotNull final CharSequence rawString) {
         return passwordEncoder.encode(rawString);
     }
 
@@ -41,7 +45,10 @@ public class Encryptor {
      * @param encryptedPassword the encrypted password to compare against
      * @return true if the raw string matches the encrypted password, false otherwise
      */
-    public final boolean matches(final CharSequence rawString, final String encryptedPassword) {
+    public boolean matches(
+        @NotNull final CharSequence rawString,
+        @NotNull final String encryptedPassword
+    ) {
         return passwordEncoder.matches(rawString, encryptedPassword);
     }
 }

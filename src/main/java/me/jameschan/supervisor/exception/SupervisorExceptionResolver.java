@@ -14,9 +14,7 @@ import java.util.HashMap;
 public class SupervisorExceptionResolver extends DataFetcherExceptionResolverAdapter {
     @Override
     protected GraphQLError resolveToSingleError(
-        @NonNull Throwable ex,
-        @NonNull DataFetchingEnvironment env
-    ) {
+        @NonNull Throwable ex, @NonNull DataFetchingEnvironment env) {
         if (ex instanceof ResourceException) {
             final var extensions = new HashMap<String, Object>();
             extensions.put("code", ((ResourceException) ex).getErrorCode());

@@ -1,15 +1,17 @@
 type Query {
-    # Retrieve a user by their ID.
+    # Retrieves a user by ID.
     userById(id: ID!): User
 
-    # Get user by session id
+    # Gets user by session id
     userBySessionId(sessionId: String!): User
 
-    # User sign in
+    # User signs in
     signIn(username: String!, password: String!): User
 }
 
 type Mutation {
+    # Creates a new user.
+    # The API will fail if the given username has been registered.
     createUser(username: String!, email: String!, password: String!): User
 }
 

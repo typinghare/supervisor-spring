@@ -1,5 +1,6 @@
 package me.jameschan.supervisor.exception;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.graphql.execution.ErrorType;
 
 public class ServiceException extends RuntimeException {
@@ -7,20 +8,19 @@ public class ServiceException extends RuntimeException {
     private final ErrorType errorType;
 
     public ServiceException(
-        final Integer errorCode,
-        final ErrorType errorType,
-        final String message
-    ) {
+        @NotNull final Integer errorCode,
+        @NotNull final ErrorType errorType,
+        @NotNull final String message) {
         super(message);
         this.errorCode = errorCode;
         this.errorType = errorType;
     }
 
-    public Integer getErrorCode() {
+    public @NotNull Integer getErrorCode() {
         return errorCode;
     }
 
-    public ErrorType getErrorType() {
+    public @NotNull ErrorType getErrorType() {
         return errorType;
     }
 }
